@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record model="ir.model" context="{'studio': True}" id="studio_customization.application_diagnosi_e1de3c2e-6eef-4df1-829f-f2453f879370">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field eval="False" name="is_mail_thread"/>
+    <field name="model">x_</field>
+    <field name="name">application.diagnosis</field>
+    <field name="state">manual</field>
+    <field eval="False" name="transient"/>
+  </record>
+  <record model="ir.model" context="{'studio': True}" id="studio_customization.jatko_612a41c8-8080-458f-a269-34ea16e92d00">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field eval="False" name="is_mail_thread"/>
+    <field name="model">x_jatko</field>
+    <field name="name">Jatko</field>
+    <field name="state">manual</field>
+    <field eval="False" name="transient"/>
+  </record>
+  <record model="ir.model" context="{'studio': True}" id="studio_customization.attachments_2314dcb7-9d56-407c-8cbb-acf6feb08f59">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field eval="False" name="is_mail_thread"/>
+    <field name="model">x_attachements</field>
+    <field name="name">attachments</field>
+    <field name="state">manual</field>
+    <field eval="False" name="transient"/>
+  </record>
+  <record model="ir.model" context="{'studio': True}" id="studio_customization.support_use_case_kay_01e958d8-572f-4891-a7c3-ca8159f33ae6">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field eval="False" name="is_mail_thread"/>
+    <field name="model">x_application_usecase</field>
+    <field name="name">Support use case (Käyttötarkoitus)</field>
+    <field name="state">manual</field>
+    <field eval="False" name="transient"/>
+  </record>
+</odoo>
