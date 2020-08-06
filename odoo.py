@@ -1,27 +1,33 @@
-from xml.dom import minidom
+import xml.dom.minidom
 
-# parse an xml file by name
-mydoc = minidom.parse('ir_model_fields.xml')
+def main():
+    # use the parse() function to load and parse an XML file
+   doc = xml.dom.minidom.parse("ir_model_fields.xml");
+  
+# print out the document node and the name of the first child tag
+   print(doc.nodeName)
+   print(doc.firstChild.tagName)
+  
+# # get a list of XML tags from the document and print each one
+   expertise = doc.getElementsByTagName("field")
+   print ("%d expertise:" % expertise.length)
+   for skill in expertise:
+        print (skill.getAttribute("name"))
+        if skill.getAttribute("name") == "field_description":
+            print("kissa")
+    
+# # create a new XML tag and add it into the document
+#    newexpertise = doc.createElement("expertise")
+#    newexpertise.setAttribute("name", "BigData")
+#    doc.firstChild.appendChild(newexpertise)
+#    print " "
 
-items = mydoc.getElementsByTagName('field')
+#    expertise = doc.getElementsByTagName("expertise")
+#    print "%d expertise:" % expertise.length
+#    for skill in expertise:
+#      print skill.getAttribute("name")
 
-# # one specific item attribute
-# print('Item #2 attribute:')
-# print(items[1].attributes['field'].value)
+    
 
-# all item attributes
-print('\nAll attributes:')
-for elem in items:
-    # print(elem.attributes['name'].value)
-    if elem.attributes['name'].value == "field_description":
-        print("works", elem.attributes['name'].value)
-
-# # one specific item's data
-# print('\nItem #2 data:')
-# print(items[1].firstChild.data)
-# print(items[1].childNodes[0].data)
-
-# # all items data
-# print('\nAll item data:')
-# for elem in items:
-#     print(elem.firstChild.data)
+if __name__ == "__main__":
+    main()
