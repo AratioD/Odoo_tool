@@ -3,20 +3,22 @@ import xml.etree.ElementTree as ET
 
 class ValidString:
     """
-    The class Data validates all string based values in the module. 
-    Numerical values are not allowed.
+    The class ValidString validates all string based values in the module. 
+    Numerical values are not allowed and string needs to have a prober length, which user defines.
     """
+    
+    def __init__(self, min_lenght=None):
+        self.min_lenght = min_lenght
 
     def __set_name__(self, owner_class, property_name):
         self.property_name = property_name
 
     def __set__(self, instance, value):
-        if not isinstance(value, int):
+        if not isinstance(value, str):
+            raise ValueError(f'ERROR! {self.property_name} MUST BE A STRING!')
+        if self.min_lenght is not None and len(value) < self.min_lenght:
             raise ValueError(
-                f'ERROR!--> {self.property_name} VALUE MUST BE AN INTEGER!')
-        if value < 0:
-            raise ValueError(
-                f'ERROR!--> {self.property_name} VALUE NEEDS TO BE POSITIVE INTEGER!'
+                f'ERROR! {self.property_name} MUST BE AT LEAST {self.min_lenght} CHARACTERS!'
             )
         instance.__dict__[self.property_name] = value
 
@@ -27,9 +29,9 @@ class ValidString:
 
 
 class Model:
-    ttype = Data()
-    name = Data()
-    model = Data()
+    ttype = ValidString(2)
+    name = ValidString(2)
+    model = ValidString(2)
 
 
 def loop_ir_model_fields():
@@ -48,6 +50,9 @@ def loop_ir_model_fields():
 
 
 def main():
+    """
+    Tha main class which calls all needed functions.
+    """
     loop_ir_model_fields()
 
 
