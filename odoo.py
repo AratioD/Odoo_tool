@@ -8,6 +8,7 @@ class File:
     """
     The class File generates a Python file with a current time stamp.
     """
+
     def __init__(self):
         pass
 
@@ -30,14 +31,14 @@ class ValidString:
     """
 
     def __init__(self, min_lenght=None):
-        self.min_lenght=min_lenght
+        self.min_lenght = min_lenght
 
     def __set_name__(self, owner_class, property_name):
-        self.property_name=property_name
+        self.property_name = property_name
 
     def __set__(self, instance, value):
         # Unpack the actual value and value type.
-        value, value_type=value
+        value, value_type = value
         if not isinstance(value, str):
             raise ValueError(f'ERROR! {self.property_name} MUST BE A STRING!')
         if self.min_lenght is not None and len(value) < self.min_lenght:
@@ -46,16 +47,16 @@ class ValidString:
             )
         # Input validation
         if value_type == "ttype":
-            temp=value.capitalize()
-            instance.__dict__[self.property_name]=(temp, value_type)
+            temp = value.capitalize()
+            instance.__dict__[self.property_name] = (temp, value_type)
         elif value_type == "name":
             if "x_" == value[0:2]:
-                temp=value[2:]
-                instance.__dict__[self.property_name]=(temp, value_type)
+                temp = value[2:]
+                instance.__dict__[self.property_name] = (temp, value_type)
             else:
-                instance.__dict__[self.property_name]=(value, value_type)
+                instance.__dict__[self.property_name] = (value, value_type)
         elif value_type == "model":
-            instance.__dict__[self.property_name]=(value, value_type)
+            instance.__dict__[self.property_name] = (value, value_type)
 
     def __get__(self, instance, owner_class):
         if instance is None:
@@ -64,10 +65,10 @@ class ValidString:
 
 
 class Model:
-    data_type=ValidString(2)
-    data_name=ValidString(2)
-    data_model=ValidString(2)
-    data_name_or_inherit=ValidString(2)
+    data_type = ValidString(2)
+    data_name = ValidString(2)
+    data_model = ValidString(2)
+    data_name_or_inherit = ValidString(2)
 
 
 def loop_ir_model_fields():
@@ -79,23 +80,23 @@ def loop_ir_model_fields():
     3. ttype
     """
     # Specified file name.
-    tree=ET.parse('ir_model_fields.xml')
-    root=tree.getroot()
+    tree = ET.parse('ir_model_fields.xml')
+    root = tree.getroot()
 
     # Empty object list to be returned.
-    object_list=[]
+    object_list = []
     for child in root:
         # print(child.tag, child.attrib)
         # print(root[0][0].text)
-        p=Model()
+        p = Model()
         for cc in child:
-            tag_type=cc.get('name')
+            tag_type = cc.get('name')
             if tag_type == "model":
-                p.data_model=(cc.text, tag_type)
+                p.data_model = (cc.text, tag_type)
             elif tag_type == "name":
-                p.data_name=(cc.text, tag_type)
+                p.data_name = (cc.text, tag_type)
             elif tag_type == "ttype":
-                p.data_type=(cc.text, tag_type)
+                p.data_type = (cc.text, tag_type)
         object_list.append(p)
     return object_list
 
@@ -108,66 +109,46 @@ def refine_data(fields_objects, model_objects):
     2. model_objects
     """
     # List for refined objects
-    refined_objects=[]
+    refined_objects = []
 
     for elem in fields_objects:
         # A creation of instance.
-        ro=Model()
-        found_match=False
+        ro = Model()
+        found_match = False
         for elem1 in model_objects:
             if elem.data_model == elem1.data_model:
-                found_match=True
+                found_match = True
 
         # Because no match found value is "_inherit"
         if found_match == True:
-            ro.data_name_or_inherit=("_name", "name")
+            ro.data_name_or_inherit = ("_name", "name")
         else:
-            ro.data_name_or_inherit=("_inherit", "name")
+            ro.data_name_or_inherit = ("_inherit", "name")
 
-        ro.data_model=(elem.data_model[0], elem.data_model[1])
-        ro.data_name=(elem.data_name[0], elem.data_name[1])
-        ro.data_type=(elem.data_type[0], elem.data_type[1])
+        ro.data_model = (elem.data_model[0], elem.data_model[1])
+        ro.data_name = (elem.data_name[0], elem.data_name[1])
+        ro.data_type = (elem.data_type[0], elem.data_type[1])
         refined_objects.append(ro)
 
     return refined_objects
 
 
-def print_data(refined_objects):
+def print_data(refined_objects, result_file_name):
 
-    import_str="from odoo import models, fields"
-    import_class="class AModel(models.Model):"
-    import_name="        _name = 'a.model.name'"
-    import_field="        field1 = fields.Char()"
-
+    f = open(result_file_name, "a")
     for ro in refined_objects:
-        print(f'class AModel(models.{ro.data_model[0]}):')
-        print(
-            f'        {ro.data_name_or_inherit[0]} = a.{ro.data_model[0]}.{ro.data_name[0]}')
-        print()
-        print(f'        field1 = fields.{ro.data_type[0]}()')
-        print()
-        print()
-    # print(import_str)
-    # print()
-    # print()
-    # print()
+        row1 = (f'class AModel(models.{ro.data_model[0]})')
+        row2 = (f'      {ro.data_name_or_inherit[0]} = a.{ro.data_model[0]}.{ro.data_name[0]}')
+        row3 = (f'      field1 = fields.{ro.data_type[0]}()')
 
-    # for x in range(5):
-
-    #     print(import_class)
-    #     print()
-    #     print(import_name)
-    #     print()
-    #     print(import_field)
-    #     print()
-    #     x = x+1
-
-
-# from odoo import models, fields
-# class AModel(models.Model):
-#     _name = 'a.model.name'
-
-#     field1 = fields.Char()
+        
+        f.write(row1)
+        f.write('\n')
+        f.write(row2)
+        f.write('\n')
+        f.write(row3)
+        f.write('\n')
+        f.write('\n')
 
 def loop_ir_model():
     """
@@ -177,17 +158,17 @@ def loop_ir_model():
     Returns: Object_list full Model() instances.
     """
     # Specified file name.
-    tree=ET.parse('ir_model.xml')
-    root=tree.getroot()
+    tree = ET.parse('ir_model.xml')
+    root = tree.getroot()
 
     # Empty object list to be returned.
-    object_list=[]
+    object_list = []
     for child in root:
-        p=Model()
+        p = Model()
         for cc in child:
-            tag_type=cc.get('name')
+            tag_type = cc.get('name')
             if tag_type == "model":
-                p.data_model=(cc.text, tag_type)
+                p.data_model = (cc.text, tag_type)
         object_list.append(p)
     return object_list
 
@@ -196,36 +177,13 @@ def main():
     """
     Tha main class which calls all needed functions.
     """
-    f=File()
-    f.time_stamp_filename()
+    f = File()
+    result_file_name = f.time_stamp_filename()
 
-
-    fields_objects=loop_ir_model_fields()
-    model_objects=loop_ir_model()
-    refined_objects=refine_data(fields_objects, model_objects)
-    # print_data(refined_objects)
-
-    # for xx in refined_objects:
-    #     # print(xx.data_model[1], "-->", xx.data_model[0], "|--", xx.data_name[1], "-->", xx.data_name[0], "|--",
-    #     #       xx.data_type[1], "-->", xx.data_type[0], "|--",  xx.data_name_or_inherit[1], "-->", xx.data_name_or_inherit[0])
-
-    #     if xx.data_name_or_inherit[0] == "_name":
-    #         print(xx.data_model[1], "-->", xx.data_model[0], "|--", xx.data_name[1], "-->", xx.data_name[0], "|--",
-    #               xx.data_type[1], "-->", xx.data_type[0], "|--",  xx.data_name_or_inherit[1], "-->", xx.data_name_or_inherit[0])
-    #     else:
-    #         print(xx.data_model[1], "-->", xx.data_model[0], "|--", xx.data_name[1], "-->", xx.data_name[0], "|--",
-    #               xx.data_type[1], "-->", xx.data_type[0], "|--",  xx.data_name_or_inherit[1], "-->", xx.data_name_or_inherit[0])
-
-    # # # for dd in fields_objects:
-
-    # #     print("model--> ", dd.data_model, " <--name-->",
-    # #           dd.data_name, "<--type-->", dd.data_type)
-    # #     # print(dd.data_type)
-
-    # for dd in model_objects:
-    #     print("model--> ", dd.data_model)
-    #     # print(dd.data_type)
-
-
+    fields_objects = loop_ir_model_fields()
+    model_objects = loop_ir_model()
+    refined_objects = refine_data(fields_objects, model_objects)
+    print_data(refined_objects, result_file_name)
+    
 if __name__ == "__main__":
     main()
