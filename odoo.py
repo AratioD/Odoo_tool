@@ -75,15 +75,40 @@ def loop_ir_model_fields():
 
     return object_list
 
+def loop_ir_model():
+    tree = ET.parse('ir_model.xml')
+    root = tree.getroot()
+    # # print(root.tag)
+    # # print(root[0][1].text)
+    object_list = []
+    for child in root:
+        # print(child.tag, child.attrib)
+        # print(root[0][0].text)
+        p = Model()
+
+        for cc in child:
+            tag_type = cc.get('name')
+            if tag_type == "model":
+                p.data_model = (cc.text, tag_type)
+            elif tag_type == "name":
+                p.data_name = (cc.text, tag_type)
+            elif tag_type == "ttype":
+                p.data_type = (cc.text, tag_type)
+
+        object_list.append(p)
+
+    return object_list
+    
 
 def main():
     """
     Tha main class which calls all needed functions.
     """
 
-    objects = loop_ir_model_fields()
+    fields_objects = loop_ir_model_fields()
+    # model_objects = loop_ir_model()
 
-    for dd in objects:
+    for dd in fields_objects:
         print("model--> ", dd.data_model, " <--name-->",
               dd.data_name, "<--type-->", dd.data_type)
         # print(dd.data_type)
