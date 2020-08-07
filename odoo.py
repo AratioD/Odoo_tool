@@ -93,6 +93,7 @@ def refine_data(fields_objects, model_objects):
     Parameters are.
     1. fields_objects
     2. model_objects
+    Returns: A object_list full Model() instances.
     """
     # List for refined objects
     refined_objects = []
@@ -120,6 +121,10 @@ def refine_data(fields_objects, model_objects):
 
 
 def write_data(refined_objects, result_file_name):
+    """
+    Writes refined objects to time stamped file name
+    Returns: Time-stamped Python file.
+    """
 
     f = open(result_file_name, "a")
 
@@ -150,7 +155,7 @@ def loop_ir_model():
     Loop all specified model fields.
     The field is
     1. model
-    Returns: Object_list full Model() instances.
+    Returns: A object_list full Model() instances.
     """
     # Specified file name.
     tree = ET.parse('ir_model.xml')
@@ -169,6 +174,10 @@ def loop_ir_model():
 
 
 def time_stamp_filename():
+    """ 
+    The Function creates a new python file and generates a time stamp for that.
+    Return: File name 
+    """
     timestamp = time.time()
     readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
     timestamp = re.sub("[-:]", "_", readable)
