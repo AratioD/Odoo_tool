@@ -7,7 +7,7 @@ class ValidString:
     Numerical values are not allowed and strings validation rules are
     1. If "ttype" capitalize a first letter.
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
-    3. If data type is "model". No modifications. 
+    3. If data type is "model". No modifications.
     """
 
     def __init__(self, min_lenght=None):
@@ -58,17 +58,16 @@ def loop_ir_model_fields():
     2. name
     3. ttype
     """
-
+    # Specified file name.
     tree = ET.parse('ir_model_fields.xml')
     root = tree.getroot()
-    # # print(root.tag)
-    # # print(root[0][1].text)
+
+    # Empty object list to be returned.
     object_list = []
     for child in root:
         # print(child.tag, child.attrib)
         # print(root[0][0].text)
         p = Model()
-
         for cc in child:
             tag_type = cc.get('name')
             if tag_type == "model":
@@ -77,29 +76,32 @@ def loop_ir_model_fields():
                 p.data_name = (cc.text, tag_type)
             elif tag_type == "ttype":
                 p.data_type = (cc.text, tag_type)
-
         object_list.append(p)
-
     return object_list
 
+# def refine_data():
+    
 def loop_ir_model():
+    """
+    Loop all specified model fields.
+    The field is
+    1. model
+    """
+    # Specified file name.
     tree = ET.parse('ir_model.xml')
     root = tree.getroot()
-    # # print(root.tag)
-    # # print(root[0][1].text)
+
+    # Empty object list to be returned.
     object_list = []
     for child in root:
         p = Model()
-
         for cc in child:
             tag_type = cc.get('name')
             if tag_type == "model":
                 p.data_model = (cc.text, tag_type)
-
         object_list.append(p)
-
     return object_list
-    
+
 
 def main():
     """
@@ -113,7 +115,7 @@ def main():
     #     print("model--> ", dd.data_model, " <--name-->",
     #           dd.data_name, "<--type-->", dd.data_type)
     #     # print(dd.data_type)
-        
+
     for dd in model_objects:
         print("model--> ", dd.data_model)
         # print(dd.data_type)
