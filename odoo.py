@@ -1,24 +1,14 @@
+"""
+2020-08-07 Demo software. @AratioD
+"""
 import time
 import datetime
 import re
 import xml.etree.ElementTree as ET
 
 
-class File:
-    """
-    The class File generates a Python file with a current time stamp.
-    """
 
-    def __init__(self):
-        pass
 
-    def time_stamp_filename(self):
-        timestamp = time.time()
-        readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
-        timestamp = re.sub("[-:]", "_", readable)
-        file_name = str(timestamp) + "_Odoo_.py"
-        open(file_name, 'a').close()
-        return file_name
 
 
 class ValidString:
@@ -136,12 +126,20 @@ def refine_data(fields_objects, model_objects):
 def print_data(refined_objects, result_file_name):
 
     f = open(result_file_name, "a")
+
+    # Imports to py file.
+    row0 = (f'from odoo import models, fields')
+
+    f.write(row0)
+    f.write('\n')
+    f.write('\n')
+
     for ro in refined_objects:
-        row1 = (f'class AModel(models.{ro.data_model[0]})')
-        row2 = (f'      {ro.data_name_or_inherit[0]} = a.{ro.data_model[0]}.{ro.data_name[0]}')
+        row1 = (f'class AModel(models.Model):')
+        row2 = (
+            f'      {ro.data_name_or_inherit[0]} = a.{ro.data_model[0]}.{ro.data_name[0]}')
         row3 = (f'      field1 = fields.{ro.data_type[0]}()')
 
-        
         f.write(row1)
         f.write('\n')
         f.write(row2)
@@ -149,6 +147,7 @@ def print_data(refined_objects, result_file_name):
         f.write(row3)
         f.write('\n')
         f.write('\n')
+
 
 def loop_ir_model():
     """
@@ -172,18 +171,26 @@ def loop_ir_model():
         object_list.append(p)
     return object_list
 
+def time_stamp_filename():
+        timestamp = time.time()
+        readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
+        timestamp = re.sub("[-:]", "_", readable)
+        file_name = str(timestamp) + "_Odoo_.py"
+        open(file_name, 'a').close()
+        return file_name
+
 
 def main():
     """
     Tha main class which calls all needed functions.
     """
-    f = File()
-    result_file_name = f.time_stamp_filename()
+    result_file_name = time_stamp_filename()
 
     fields_objects = loop_ir_model_fields()
     model_objects = loop_ir_model()
     refined_objects = refine_data(fields_objects, model_objects)
     print_data(refined_objects, result_file_name)
-    
+
+
 if __name__ == "__main__":
     main()
