@@ -138,7 +138,7 @@ def write_data(refined_objects, result_file_name):
     for ro in refined_objects:
         row1 = (f'class AModel(models.Model):')
         row2 = (
-            f'      {ro.data_name_or_inherit[0]} = a.{ro.data_model[0]}.{ro.data_name[0]}')
+            f'      {ro.data_name_or_inherit[0]} = \'a.{ro.data_model[0]}.{ro.data_name[0]}\'')
         row3 = (f'      field1 = fields.{ro.data_type[0]}()')
 
         f.write(row1)
