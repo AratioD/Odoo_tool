@@ -7,10 +7,6 @@ import re
 import xml.etree.ElementTree as ET
 
 
-
-
-
-
 class ValidString:
     """
     The class ValidString validates all string based values in the module.
@@ -123,7 +119,7 @@ def refine_data(fields_objects, model_objects):
     return refined_objects
 
 
-def print_data(refined_objects, result_file_name):
+def write_data(refined_objects, result_file_name):
 
     f = open(result_file_name, "a")
 
@@ -171,25 +167,36 @@ def loop_ir_model():
         object_list.append(p)
     return object_list
 
+
 def time_stamp_filename():
-        timestamp = time.time()
-        readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
-        timestamp = re.sub("[-:]", "_", readable)
-        file_name = str(timestamp) + "_Odoo_.py"
-        open(file_name, 'a').close()
-        return file_name
+    timestamp = time.time()
+    readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
+    timestamp = re.sub("[-:]", "_", readable)
+    file_name = str(timestamp) + "_Odoo_.py"
+    open(file_name, 'a').close()
+    return file_name
 
 
 def main():
     """
     Tha main class which calls all needed functions.
+    Functions:
+    1. The file function. Call a file function to generate a new python file.
+    2. The field collect function. Loops and collect needed field data from the file.
+    3. The model collect function. Concanate and refine model data and field data.
+    4. The refine data function. Concanate and refine model data and field data
+    5. The write refined data to file function.  Writes file from the refined list of objects.
     """
+    # Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
-
+    # Loops and collect needed field data from the file.
     fields_objects = loop_ir_model_fields()
+    # Loops and collect needed field data from the file.
     model_objects = loop_ir_model()
+    # Concanate and refine model data and field data
     refined_objects = refine_data(fields_objects, model_objects)
-    print_data(refined_objects, result_file_name)
+    # Writes file from the refined list of objects.
+    write_data(refined_objects, result_file_name)
 
 
 if __name__ == "__main__":
