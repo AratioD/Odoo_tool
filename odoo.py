@@ -10,10 +10,11 @@ import xml.etree.ElementTree as ET
 class ValidString:
     """
     The class ValidString validates all string based values in the module.
-    Numerical values are not allowed and strings validation rules are
+    Numerical values are not allowed and strings validation rules are.
     1. If "ttype" capitalize a first letter.
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
+    Please note that descriptor also saves instances type!
     """
 
     def __init__(self, min_lenght=None):
@@ -51,6 +52,9 @@ class ValidString:
 
 
 class Model:
+    """
+    All instance attributes can handle only string data types.
+    """
     data_type = ValidString(2)
     data_name = ValidString(2)
     data_model = ValidString(2)
@@ -64,6 +68,7 @@ def loop_ir_model_fields():
     1. model
     2. name
     3. ttype
+    Returns: A object_list full Model() instances.
     """
     # Specified file name.
     tree = ET.parse('ir_model_fields.xml')
