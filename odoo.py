@@ -27,7 +27,7 @@ class ValidString:
         # Unpack the actual value and value type.
         value, value_type = value
         if not isinstance(value, str):
-            raise ValueError(f'ERROR! {self.property_name} MUST BE A STRING!')
+            raise ValueError(f'ERROR! {self.property_name} MUST BE A STRING! NOW IT IS --> {value}')
         if self.min_lenght is not None and len(value) < self.min_lenght:
             raise ValueError(
                 f'ERROR! {self.property_name} MUST BE AT LEAST {self.min_lenght} CHARACTERS!'
@@ -49,7 +49,7 @@ class ValidString:
         if instance is None:
             return self
         return instance.__dict__.get(self.property_name, None)
-    
+
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (self.property_name == other.property_name)
@@ -201,6 +201,7 @@ def time_stamp_filename():
     open(file_name, 'a').close()
     return file_name
 
+
 def odoo_test():
     """
     The test class, which includes n tests to assure everything works fine.
@@ -212,26 +213,23 @@ def odoo_test():
     t3 = Model()
     t4 = Model()
     t5 = Model()
-   
-    t0.data_name= ("Test", "name")
-    t1.data_name= ("Test", "name")
-    t2.data_name= ("Python_4ever", "name")
-    t3.data_model= ("cat", "model")
-    t4.data_name= ("cat", "name")
 
+    t0.data_name = ("Test", "name")
+    t1.data_name = ("Test", "name")
+    t2.data_name = ("Python_4ever", "name")
+    t3.data_model = ("cat", "model")
+    t4.data_name = ("cat", "name")
+    t5.data_type = (345345, "model")
+    
 
     # Test number 1, class instance t0 is equal to t1
     assert t0.data_name == t1.data_name
-    
+
     # Test number 2, class instance t1 is NOT equal to t2
     assert t1.data_name != t2.data_name
-    
+
     # Test number 3, class instance t3 is NOT equal to t4 for datatype.
     assert t3.data_model != t4.data_name
-    
-    
-
-
 
 
 def main():
@@ -244,17 +242,16 @@ def main():
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
     """
-    # Call test module
-    
-    # Call a file function to generate a new python file.
+
+    # 1. Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
-    # Loops and collect needed field data from the file.
+    # 2. Loops and collect needed field data from the file.
     fields_objects = loop_ir_model_fields()
-    # Loops and collect needed field data from the file.
+    # 3. Loops and collect needed field data from the file.
     model_objects = loop_ir_model()
-    # Concanate and refine model data and field data
+    # 4. Concanate and refine model data and field data
     refined_objects = refine_data(fields_objects, model_objects)
-    # Writes file from the refined list of objects.
+    # 5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name)
     # A end time for a performance comparision
     end = time.time()
