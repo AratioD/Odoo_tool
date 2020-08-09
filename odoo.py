@@ -206,6 +206,7 @@ def time_stamp_filename():
 def odoo_test():
     """
     The test class, which includes n tests to assure everything works fine.
+    Total tests amount is 5.
     """
     t0 = Model()
     t1 = Model()
