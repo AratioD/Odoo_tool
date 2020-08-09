@@ -56,13 +56,6 @@ class ValidString:
         else:
             return NotImplemented
 
-    # def __gt__(self, other):
-    #     if isinstance(other, Polygon):
-    #         return self.edges > other.edges
-    #     else:
-    #         return NotImplemented
-
-
 
 class Model:
     """
@@ -215,25 +208,29 @@ def odoo_test():
 
     t0 = Model()
     t1 = Model()
+    t2 = Model()
+    t3 = Model()
+    t4 = Model()
+    t5 = Model()
    
     t0.data_name= ("Test", "name")
     t1.data_name= ("Test", "name")
+    t2.data_name= ("Python_4ever", "name")
+    t3.data_model= ("cat", "model")
+    t4.data_name= ("cat", "name")
 
-    # Test number 1
+
+    # Test number 1, class instance t0 is equal to t1
     assert t0.data_name == t1.data_name
-    assert t0.data_name == t1.data_name
+    
+    # Test number 2, class instance t1 is NOT equal to t2
+    assert t1.data_name != t2.data_name
+    
+    # Test number 3, class instance t3 is NOT equal to t4 for datatype.
+    assert t3.data_model != t4.data_name
+    
+    
 
-    # # Test number 6
-    # assert p2 < p3
-
-    # # Test number 7
-    # assert p3 != p4
-
-    # # Test number 8
-    # assert p1 != p4
-
-    # # Test number 9
-    # assert p4 == p5
 
 
 
@@ -265,7 +262,11 @@ def main():
 
 
 if __name__ == "__main__":
+    """
+    Two functions
+    """
     # A start time for a performance comparision
     start = time.time()
+    # Run unit tests.
     odoo_test()
     main()
