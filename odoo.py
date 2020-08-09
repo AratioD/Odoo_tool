@@ -201,6 +201,8 @@ def main():
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
     """
+    # Performance start time
+
     # Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
     # Loops and collect needed field data from the file.
@@ -211,7 +213,12 @@ def main():
     refined_objects = refine_data(fields_objects, model_objects)
     # Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name)
+    # A end time for a performance comparision
+    end = time.time()
+    print("Performance result--> ", end - start)
 
 
 if __name__ == "__main__":
+    # A start time for a performance comparision
+    start = time.time()
     main()
