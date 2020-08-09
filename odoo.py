@@ -49,11 +49,29 @@ class ValidString:
         if instance is None:
             return self
         return instance.__dict__.get(self.property_name, None)
+    
+    # def __eq__(self, other):
+    #     if isinstance(other, self.__class__):
+    #         return (self.circumradius == other.circumradius and self.edges == other.edges)
+    #     else:
+    #         return NotImplemented
+
+    # def __gt__(self, other):
+    #     if isinstance(other, Polygon):
+    #         return self.edges > other.edges
+    #     else:
+    #         return NotImplemented
+
 
 
 class Model:
     """
     All instance attributes can handle only string data types.
+    Class instances are Number inside parenthesis define the lenght of the string.
+    1. data_type = ValidString(2)
+    2. data_name = ValidString(2)
+    3. data_model = ValidString(2)
+    4. data_name_or_inherit = ValidString(2)
     """
     data_type = ValidString(2)
     data_name = ValidString(2)
@@ -75,7 +93,7 @@ def loop_ir_model_fields():
     root = tree.getroot()
 
     # Empty object list to be returned.
-    object_list = []
+    object_list = set()
     for child in root:
         # print(child.tag, child.attrib)
         # print(root[0][0].text)
@@ -88,7 +106,7 @@ def loop_ir_model_fields():
                 p.data_name = (cc.text, tag_type)
             elif tag_type == "ttype":
                 p.data_type = (cc.text, tag_type)
-        object_list.append(p)
+        object_list.add(p)
     return object_list
 
 
@@ -101,7 +119,7 @@ def refine_data(fields_objects, model_objects):
     Returns: A object_list full Model() instances.
     """
     # List for refined objects
-    refined_objects = []
+    refined_objects = set()
 
     for elem in fields_objects:
         # A creation of instance.
@@ -120,7 +138,7 @@ def refine_data(fields_objects, model_objects):
         ro.data_model = (elem.data_model[0], elem.data_model[1])
         ro.data_name = (elem.data_name[0], elem.data_name[1])
         ro.data_type = (elem.data_type[0], elem.data_type[1])
-        refined_objects.append(ro)
+        refined_objects.add(ro)
 
     return refined_objects
 
@@ -190,6 +208,55 @@ def time_stamp_filename():
     open(file_name, 'a').close()
     return file_name
 
+def odoo_test():
+    """
+    The test class, which includes 2 separate tests that all changes are correct in the code.
+    The class use relative and absolute tolerances set up 0.001 accuracy.
+    """
+    # Relative tolerance
+    # rel_tol = 0.001
+    # # Absolute tolerance level
+    # abs_tol = 0.001
+
+    # # Test number 1
+    # tt = Model(n, R)
+    # assert str(p) == f"Polygon(n=3, R=1)", f"actual-->  {str(p)}"
+    # assert p.edges == n, (f"actual: {p.edges}")
+    # assert p.circumradius == R, (f"actual: {p.circumradius}")
+    # assert p.interior_angle == 60, (f"actual: {p.circumradius}")
+    # #             tag_type = cc.get('name')
+    # #         if tag_type == "model":
+    # #             p.data_model = (cc.text, tag_type)
+    # #         elif tag_type == "name":
+    # #             p.data_name = (cc.text, tag_type)
+    # #         elif tag_type == "ttype":
+    # #             p.data_type = (cc.text, tag_type)
+    # #     object_list.add(p)
+    # # return object_list
+        # Test objects initialization
+    t0 = Model()
+    t1 = Model()
+    # p2 = Polygon(10, 10)
+    # p3 = Polygon(15, 10)
+    # p4 = Polygon(15, 100)
+    # p5 = Polygon(15, 100)
+
+    # Test number 5
+    assert t0 == t1
+
+    # # Test number 6
+    # assert p2 < p3
+
+    # # Test number 7
+    # assert p3 != p4
+
+    # # Test number 8
+    # assert p1 != p4
+
+    # # Test number 9
+    # assert p4 == p5
+
+
 
 def main():
     """
@@ -201,8 +268,8 @@ def main():
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
     """
-    # Performance start time
-
+    # Call test module
+    
     # Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
     # Loops and collect needed field data from the file.
