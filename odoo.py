@@ -50,11 +50,11 @@ class ValidString:
             return self
         return instance.__dict__.get(self.property_name, None)
     
-    # def __eq__(self, other):
-    #     if isinstance(other, self.__class__):
-    #         return (self.circumradius == other.circumradius and self.edges == other.edges)
-    #     else:
-    #         return NotImplemented
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.property_name == other.property_name)
+        else:
+            return NotImplemented
 
     # def __gt__(self, other):
     #     if isinstance(other, Polygon):
@@ -210,39 +210,18 @@ def time_stamp_filename():
 
 def odoo_test():
     """
-    The test class, which includes 2 separate tests that all changes are correct in the code.
-    The class use relative and absolute tolerances set up 0.001 accuracy.
+    The test class, which includes n tests to assure everything works fine.
     """
-    # Relative tolerance
-    # rel_tol = 0.001
-    # # Absolute tolerance level
-    # abs_tol = 0.001
 
-    # # Test number 1
-    # tt = Model(n, R)
-    # assert str(p) == f"Polygon(n=3, R=1)", f"actual-->  {str(p)}"
-    # assert p.edges == n, (f"actual: {p.edges}")
-    # assert p.circumradius == R, (f"actual: {p.circumradius}")
-    # assert p.interior_angle == 60, (f"actual: {p.circumradius}")
-    # #             tag_type = cc.get('name')
-    # #         if tag_type == "model":
-    # #             p.data_model = (cc.text, tag_type)
-    # #         elif tag_type == "name":
-    # #             p.data_name = (cc.text, tag_type)
-    # #         elif tag_type == "ttype":
-    # #             p.data_type = (cc.text, tag_type)
-    # #     object_list.add(p)
-    # # return object_list
-        # Test objects initialization
     t0 = Model()
     t1 = Model()
-    # p2 = Polygon(10, 10)
-    # p3 = Polygon(15, 10)
-    # p4 = Polygon(15, 100)
-    # p5 = Polygon(15, 100)
+   
+    t0.data_name= ("Test", "name")
+    t1.data_name= ("Test", "name")
 
-    # Test number 5
-    assert t0 == t1
+    # Test number 1
+    assert t0.data_name == t1.data_name
+    assert t0.data_name == t1.data_name
 
     # # Test number 6
     # assert p2 < p3
@@ -288,4 +267,5 @@ def main():
 if __name__ == "__main__":
     # A start time for a performance comparision
     start = time.time()
+    odoo_test()
     main()
