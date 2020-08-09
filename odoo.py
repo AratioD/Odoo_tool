@@ -27,7 +27,8 @@ class ValidString:
         # Unpack the actual value and value type.
         value, value_type = value
         if not isinstance(value, str):
-            raise ValueError(f'ERROR! {self.property_name} MUST BE A STRING! NOW IT IS --> {value}')
+            raise ValueError(
+                f'ERROR! {self.property_name} MUST BE A STRING! NOW IT IS --> {value}')
         if self.min_lenght is not None and len(value) < self.min_lenght:
             raise ValueError(
                 f'ERROR! {self.property_name} MUST BE AT LEAST {self.min_lenght} CHARACTERS!'
@@ -206,21 +207,21 @@ def odoo_test():
     """
     The test class, which includes n tests to assure everything works fine.
     """
-
     t0 = Model()
     t1 = Model()
     t2 = Model()
     t3 = Model()
     t4 = Model()
     t5 = Model()
+    t6 = Model()
 
     t0.data_name = ("Test", "name")
     t1.data_name = ("Test", "name")
     t2.data_name = ("Python_4ever", "name")
     t3.data_model = ("cat", "model")
     t4.data_name = ("cat", "name")
-    t5.data_type = (345345, "model")
-    
+    t5.data_type = ("python_33", "ttype")
+    t6.data_type = ("python_33", "ttype")
 
     # Test number 1, class instance t0 is equal to t1
     assert t0.data_name == t1.data_name
@@ -230,6 +231,12 @@ def odoo_test():
 
     # Test number 3, class instance t3 is NOT equal to t4 for datatype.
     assert t3.data_model != t4.data_name
+
+    # Test number 4, class instance t5 is equal to t6 for datatype.
+    assert t5.data_model == t6.data_name
+
+    # Test number 5, class instance t6 is NOT equal to t0 for datatype.
+    assert t6.data_model != t0.data_name
 
 
 def main():
@@ -241,6 +248,7 @@ def main():
     3. The model collect function. Concanate and refine model data and field data.
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
+    5. The end of performace timer. 
     """
 
     # 1. Call a file function to generate a new python file.
@@ -262,7 +270,7 @@ if __name__ == "__main__":
     """
     Two functions
     """
-    # A start time for a performance comparision
+    # A start time for a performance comparision.
     start = time.time()
     # Run unit tests.
     odoo_test()
