@@ -153,7 +153,20 @@ def write_data(refined_objects, result_file_name):
     f.write('\n')
 
     for ro in refined_objects:
-        row1 = (f'class AModel(models.Model):')
+        # String modifications to class name
+        if "." in ro.data_model[0]:
+            class_name = ro.data_model[0].split(".")
+            class_name = class_name[1].capitalize()
+            print(".->", class_name)
+        elif "_" in ro.data_model[0]:
+            class_name = ro.data_model[0].split("_")
+            class_name = class_name[0] + class_name[1] 
+            class_name = class_name.capitalize()
+            print("_->", class_name)
+        else:
+            class_name = ro.data_model[0].capitalize()
+
+        row1 = (f'class {class_name}(models.Model):')
         row2 = (
             f'      {ro.data_name_or_inherit[0]} = \'a.{ro.data_model[0]}.{ro.data_name[0]}\'')
         row3 = (f'      field1 = fields.{ro.data_type[0]}()')
