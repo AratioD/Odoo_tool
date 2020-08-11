@@ -2,9 +2,10 @@
 2020-08-07 Demo software. @AratioD
 """
 import time
+import os
 import datetime
 import re
-import xml.etree.ElementTree as ET
+from xml.etree import ElementTree
 from collections import defaultdict
 
 
@@ -75,45 +76,62 @@ class Model:
     data_desc = ValidString(0)
 
 
-def loop_ir_model_fields():
+def loop_ir_model_fields(file_name):
     """
     Loop all specified ir model fields.
     The fields are
     1. model
     2. name
     3. ttype
+    4. field description
     Returns: A object_list full Model() instances.
     """
-    # Specified file name.
-    tree = ET.parse('ir_model_fields.xml')
-    root = tree.getroot()
-
-    # Empty object list to be returned.
     object_list = set()
-    for child in root:
-        # print(child.tag, child.attrib)
-        # print(root[0][0].text)
+    # Specified file name.
+
+    full_file = os.path.abspath(os.path.join(file_name))
+    dom = ElementTree.parse(full_file)
+    # <record model="ir.model.fields" from XML file
+    records = dom.findall('record')
+
+    print(records)
+    for c in records:
         p = Model()
-        for cc in child:
-            tag_type = cc.get('name')
-            if tag_type == "model":
-                p.data_model = (cc.text, tag_type)
-            elif tag_type == "name":
-                p.data_name = (cc.text, tag_type)
-            elif tag_type == "ttype":
-                p.data_type = (cc.text, tag_type)
-            elif tag_type == "field_description":
-                print("desc", cc.text)
-                p.data_desc = (cc.text, tag_type)
+        
+        elem0 = c.find('.//field[@name="model"]')
+        if elem0 != None:
+            p.data_model = (elem0.text, "model")
+        else:
+            pass
+        
+        elem1 = c.find('.//field[@name="name"]')
+        if elem1 != None:
+            p.data_name = (elem1.text, "name")
+        else:
+            pass
+            
+        elem2 = c.find('.//field[@name="ttype"]')
+        if elem2 != None:
+            p.data_type = (elem2.text, "ttype")
+        else:
+            pass
+            
+        elem3 = c.find('.//field[@name="field_description"]')
+        if elem3 != None:
+            p.data_desc = (elem3.text, "field_description")
+        else:
+            pass
+    
         object_list.add(p)
+
     return object_list
 
 
-def refine_data(fields_objects, model_objects):
+def refine_data(model_and_fields, model_objects):
     """
     The function takes two parameters in and returns refined list.
     Parameters are.
-    1. fields_objects
+    1. model_and_fields
     2. model_objects
     Returns: A object_list full Model() instances.
     """
@@ -122,7 +140,7 @@ def refine_data(fields_objects, model_objects):
     individual_models = set()
     # objects_dict = defaultdict(set)
 
-    for elem in fields_objects:
+    for elem in model_and_fields:
         # A creation of instance.
         ro = Model()
         found_match = False
@@ -226,7 +244,7 @@ def write_data(refined_objects, result_file_name, individual_models):
     #     f.write('\n')
 
 
-def loop_ir_model():
+def loop_ir_model(file_name):
     """
     Loop all specified model fields.
     The field is
@@ -314,18 +332,27 @@ def main():
     # 1. Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
     # 2. Loops and collect needed field data from the file.
-    fields_objects = loop_ir_model_fields()
+    file_name = "ir_model_fields.xml"
+    model_and_fields = loop_ir_model_fields(file_name)
     # 3. Loops and collect needed field data from the file.
-    model_objects = loop_ir_model()
-    # 4. Concanate and refine model data and field data
-    refined_objects, individual_models = refine_data(
-        fields_objects, model_objects)
+    file_name = "ir_model.xml"
+    model_objects = loop_ir_model_fields(file_name)
 
-    # 5. Writes file from the refined list of objects.
-    write_data(refined_objects, result_file_name, individual_models)
-    # A end time for a performance comparision
-    end = time.time()
-    print("Performance result--> ", end - start)
+    for i in model_and_fields:
+        print("jee", i.data_model[0])
+        
+    for i in model_objects:
+        print("jee--->", i.data_model[0])
+    # model_objects = loop_ir_model()
+    # # 4. Concanate and refine model data and field data
+    # refined_objects, individual_models = refine_data(
+    #     model_and_fields, model_objects)
+
+    # # 5. Writes file from the refined list of objects.
+    # write_data(refined_objects, result_file_name, individual_models)
+    # # A end time for a performance comparision
+    # end = time.time()
+    # print("Performance result--> ", end - start)
 
 
 if __name__ == "__main__":
@@ -333,7 +360,7 @@ if __name__ == "__main__":
     Two functions
     """
     # A start time for a performance comparision.
-    start = time.time()
+    # start = time.time()
     # Run unit tests.
-    odoo_test()
+    # odoo_test()
     main()
