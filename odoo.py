@@ -154,9 +154,11 @@ def individual_models(model_and_fields, model_objects):
     for m in model_objects:
         all_models.add(m.data_model)
         temp1_models.add(m.data_model)
-
+    # Create a set of _inherit models.
     inherit_models = temp0_models - temp1_models
+    # Create a set of _name models.
     name_models = temp0_models.intersection(temp1_models)
+    # Create a set of empty_models.
     empty_models = all_models.difference(name_models | inherit_models)
     print(temp0_models, "models and fields")
     print(temp1_models, "model objects")
@@ -164,10 +166,10 @@ def individual_models(model_and_fields, model_objects):
     print(name_models, "lenght of name_models", len(name_models))
     print(empty_models, "emptyModels", len(empty_models))
 
-    return all_models
+    return inherit_models, name_models, empty_models
 
 
-def refine_data(model_and_fields, model_objects, all_models):
+def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     """
     The function takes two parameters in and returns refined list.
     Parameters are.
@@ -331,7 +333,8 @@ def main():
     print("model and field", len(model_and_fields))
     print("lenght model object", len(model_objects))
 
-    all_models = individual_models(model_and_fields, model_objects)
+    inherit_models, name_models, empty_models = individual_models(
+        model_and_fields, model_objects)
 
     # for i in model_and_fields:
     #     print("model_and_fields-->", i.data_model[0])
@@ -340,13 +343,14 @@ def main():
     #     print("model_objects-->", i.data_model[0])
     # model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
-    refined_objects = refine_data(model_and_fields, model_objects, all_models)
+    refined_objects = refine_data(
+        model_and_fields, inherit_models, name_models, empty_models)
 
     # print("refined objects", len(refined_objects))
-    print("individual models", len(all_models))
+    # print("individual models", len(all_models))
 
-    for tt in all_models:
-        print("models", tt[0])
+    # for tt in all_models:
+    #     print("models", tt[0])
 
     # # 5. Writes file from the refined list of objects.
     # write_data(refined_objects, result_file_name, all_models)
