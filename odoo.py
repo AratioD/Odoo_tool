@@ -243,30 +243,6 @@ def write_data(refined_objects, result_file_name, individual_models):
     #     f.write('\n')
     #     f.write('\n')
 
-
-def loop_ir_model(file_name):
-    """
-    Loop all specified model fields.
-    The field is
-    1. model
-    Returns: A object_list full Model() instances.
-    """
-    # Specified file name.
-    tree = ET.parse('ir_model.xml')
-    root = tree.getroot()
-
-    # Empty object list to be returned.
-    object_list = []
-    for child in root:
-        p = Model()
-        for cc in child:
-            tag_type = cc.get('name')
-            if tag_type == "model":
-                p.data_model = (cc.text, tag_type)
-        object_list.append(p)
-    return object_list
-
-
 def time_stamp_filename():
     """
     The Function creates a new python file and generates a time stamp for that.
