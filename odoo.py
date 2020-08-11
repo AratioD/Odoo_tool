@@ -168,8 +168,8 @@ def write_data(refined_objects, result_file_name):
 
         row1 = (f'class {class_name}(models.Model):')
         row2 = (
-            f'      {ro.data_name_or_inherit[0]} = \'a.{ro.data_model[0]}.{ro.data_name[0]}\'')
-        row3 = (f'      field1 = fields.{ro.data_type[0]}()')
+            f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+        row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
 
         f.write(row1)
         f.write('\n')
