@@ -158,35 +158,73 @@ def write_data(refined_objects, result_file_name, individual_models):
     f.write('\n')
     f.write('\n')
 
-    for elem in individual_models:
-        print(elem)
+    for model in individual_models:
+        print(model)
+        check = False
+        for ro in refined_objects:
+            if model == ro.data_model[0] and check == False:
+                if "." in ro.data_model[0]:
+                    class_name = ro.data_model[0].split(".")
+                    class_name = class_name[1].capitalize()
+                    print(".->", class_name)
+                elif "_" in ro.data_model[0]:
+                    class_name = ro.data_model[0].split("_")
+                    class_name = class_name[0] + class_name[1]
+                    class_name = class_name.capitalize()
+                    print("_->", class_name)
+                else:
+                    class_name = ro.data_model[0].capitalize()
+                check = True
+                row1 = (f'class {class_name}(models.Model):')
+                f.write(row1)
+            
+            if check == True:
+                row2 = (
+                    f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+                row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
+                
+                f.write('\n')
+                f.write(row2)
+                f.write('\n')
+                f.write(row3)
+                f.write('\n')
+                f.write('\n')
+                  
+        
+                
+                
+        
 
-    for ro in refined_objects:
-        # String modifications to class name
-        if "." in ro.data_model[0]:
-            class_name = ro.data_model[0].split(".")
-            class_name = class_name[1].capitalize()
-            print(".->", class_name)
-        elif "_" in ro.data_model[0]:
-            class_name = ro.data_model[0].split("_")
-            class_name = class_name[0] + class_name[1]
-            class_name = class_name.capitalize()
-            print("_->", class_name)
-        else:
-            class_name = ro.data_model[0].capitalize()
+        
+        
+        
 
-        row1 = (f'class {class_name}(models.Model):')
-        row2 = (
-            f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
-        row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
+    # for ro in refined_objects:
+    #     # String modifications to class name
+    #     if "." in ro.data_model[0]:
+    #         class_name = ro.data_model[0].split(".")
+    #         class_name = class_name[1].capitalize()
+    #         print(".->", class_name)
+    #     elif "_" in ro.data_model[0]:
+    #         class_name = ro.data_model[0].split("_")
+    #         class_name = class_name[0] + class_name[1]
+    #         class_name = class_name.capitalize()
+    #         print("_->", class_name)
+    #     else:
+    #         class_name = ro.data_model[0].capitalize()
 
-        f.write(row1)
-        f.write('\n')
-        f.write(row2)
-        f.write('\n')
-        f.write(row3)
-        f.write('\n')
-        f.write('\n')
+    #     row1 = (f'class {class_name}(models.Model):')
+    #     row2 = (
+    #         f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+    #     row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
+
+    #     f.write(row1)
+    #     f.write('\n')
+    #     f.write(row2)
+    #     f.write('\n')
+    #     f.write(row3)
+    #     f.write('\n')
+    #     f.write('\n')
 
 
 def loop_ir_model():
