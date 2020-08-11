@@ -44,7 +44,7 @@ class ValidString:
                 instance.__dict__[self.property_name] = (temp, value_type)
             else:
                 instance.__dict__[self.property_name] = (value, value_type)
-        elif value_type == "model":
+        elif value_type == "model" or value_type == "field_description":
             instance.__dict__[self.property_name] = (value, value_type)
 
     def __get__(self, instance, owner_class):
@@ -72,7 +72,7 @@ class Model:
     data_name = ValidString(2)
     data_model = ValidString(2)
     data_name_or_inherit = ValidString(2)
-    data_description = ValidString(2)
+    data_desc = ValidString(0)
 
 
 def loop_ir_model_fields():
@@ -102,6 +102,9 @@ def loop_ir_model_fields():
                 p.data_name = (cc.text, tag_type)
             elif tag_type == "ttype":
                 p.data_type = (cc.text, tag_type)
+            elif tag_type == "field_description":
+                print("desc", cc.text)
+                p.data_desc = (cc.text, tag_type)
         object_list.add(p)
     return object_list
 
@@ -139,6 +142,7 @@ def refine_data(fields_objects, model_objects):
         ro.data_model = (elem.data_model[0], elem.data_model[1])
         ro.data_name = (elem.data_name[0], elem.data_name[1])
         ro.data_type = (elem.data_type[0], elem.data_type[1])
+        ro.data_desc = (elem.data_desc[0], elem.data_desc[1])
         refined_objects.add(ro)
         # objects_dict[elem.data_model[0]] = ro
     return refined_objects, individual_models
@@ -160,7 +164,7 @@ def write_data(refined_objects, result_file_name, individual_models):
     f.write('\n')
 
     for model in individual_models:
-        print(model)
+        # print(model)
         check = False
         # f.write('\n')
         for ro in refined_objects:
@@ -178,30 +182,21 @@ def write_data(refined_objects, result_file_name, individual_models):
                     class_name = ro.data_model[0].capitalize()
                 check = True
                 row1 = (f'class {class_name}(models.Model):')
-                row2 = (f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+                row2 = (
+                    f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
                 f.write('\n')
                 f.write(row1)
                 f.write('\n')
                 f.write(row2)
                 f.write('\n')
-            
+
             if check == True:
                 # f.write('\n')
-                row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
+                row3 = (
+                    f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
                 # f.write('\n')
                 f.write(row3)
                 f.write('\n')
-
-
-                  
-        
-                
-                
-        
-
-        
-        
-        
 
     # for ro in refined_objects:
     #     # String modifications to class name
@@ -325,8 +320,6 @@ def main():
     # 4. Concanate and refine model data and field data
     refined_objects, individual_models = refine_data(
         fields_objects, model_objects)
-
-
 
     # 5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name, individual_models)
