@@ -72,6 +72,7 @@ class Model:
     data_name = ValidString(2)
     data_model = ValidString(2)
     data_name_or_inherit = ValidString(2)
+    data_description = ValidString(2)
 
 
 def loop_ir_model_fields():
