@@ -5,6 +5,7 @@ import time
 import datetime
 import re
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 
 
 class ValidString:
@@ -114,6 +115,8 @@ def refine_data(fields_objects, model_objects):
     """
     # List for refined objects
     refined_objects = set()
+    individual_models = set()
+    # objects_dict = defaultdict(set)
 
     for elem in fields_objects:
         # A creation of instance.
@@ -129,15 +132,18 @@ def refine_data(fields_objects, model_objects):
         else:
             ro.data_name_or_inherit = ("_inherit", "name")
 
+        # Collect all possibly datamodels
+        individual_models.add(elem.data_model[0])
+
         ro.data_model = (elem.data_model[0], elem.data_model[1])
         ro.data_name = (elem.data_name[0], elem.data_name[1])
         ro.data_type = (elem.data_type[0], elem.data_type[1])
         refined_objects.add(ro)
+        # objects_dict[elem.data_model[0]] = ro
+    return refined_objects, individual_models
 
-    return refined_objects
 
-
-def write_data(refined_objects, result_file_name):
+def write_data(refined_objects, result_file_name, individual_models):
     """
     Writes refined objects to time stamped file name
     Returns: Time-stamped Python file.
@@ -152,6 +158,9 @@ def write_data(refined_objects, result_file_name):
     f.write('\n')
     f.write('\n')
 
+    for elem in individual_models:
+        print(elem)
+
     for ro in refined_objects:
         # String modifications to class name
         if "." in ro.data_model[0]:
@@ -160,7 +169,7 @@ def write_data(refined_objects, result_file_name):
             print(".->", class_name)
         elif "_" in ro.data_model[0]:
             class_name = ro.data_model[0].split("_")
-            class_name = class_name[0] + class_name[1] 
+            class_name = class_name[0] + class_name[1]
             class_name = class_name.capitalize()
             print("_->", class_name)
         else:
@@ -204,9 +213,9 @@ def loop_ir_model():
 
 
 def time_stamp_filename():
-    """ 
+    """
     The Function creates a new python file and generates a time stamp for that.
-    Return: File name 
+    Return: File name
     """
     timestamp = time.time()
     readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
@@ -262,7 +271,7 @@ def main():
     3. The model collect function. Concanate and refine model data and field data.
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
-    5. The end of performace timer. 
+    5. The end of performace timer.
     """
 
     # 1. Call a file function to generate a new python file.
@@ -272,9 +281,13 @@ def main():
     # 3. Loops and collect needed field data from the file.
     model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
-    refined_objects = refine_data(fields_objects, model_objects)
+    refined_objects, individual_models = refine_data(
+        fields_objects, model_objects)
+
+
+
     # 5. Writes file from the refined list of objects.
-    write_data(refined_objects, result_file_name)
+    write_data(refined_objects, result_file_name, individual_models)
     # A end time for a performance comparision
     end = time.time()
     print("Performance result--> ", end - start)
