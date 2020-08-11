@@ -94,34 +94,33 @@ def loop_ir_model_fields(file_name):
     # <record model="ir.model.fields" from XML file
     records = dom.findall('record')
 
-    print(records)
     for c in records:
         p = Model()
-        
+
         elem0 = c.find('.//field[@name="model"]')
         if elem0 != None:
             p.data_model = (elem0.text, "model")
         else:
             pass
-        
+
         elem1 = c.find('.//field[@name="name"]')
         if elem1 != None:
             p.data_name = (elem1.text, "name")
         else:
             pass
-            
+
         elem2 = c.find('.//field[@name="ttype"]')
         if elem2 != None:
             p.data_type = (elem2.text, "ttype")
         else:
             pass
-            
+
         elem3 = c.find('.//field[@name="field_description"]')
         if elem3 != None:
             p.data_desc = (elem3.text, "field_description")
         else:
             pass
-    
+
         object_list.add(p)
 
     return object_list
@@ -147,6 +146,7 @@ def refine_data(model_and_fields, model_objects):
         for elem1 in model_objects:
             if elem.data_model == elem1.data_model:
                 found_match = True
+                break
 
         # Because no match found value is "_inherit"
         if found_match == True:
@@ -216,32 +216,6 @@ def write_data(refined_objects, result_file_name, individual_models):
                 f.write(row3)
                 f.write('\n')
 
-    # for ro in refined_objects:
-    #     # String modifications to class name
-    #     if "." in ro.data_model[0]:
-    #         class_name = ro.data_model[0].split(".")
-    #         class_name = class_name[1].capitalize()
-    #         print(".->", class_name)
-    #     elif "_" in ro.data_model[0]:
-    #         class_name = ro.data_model[0].split("_")
-    #         class_name = class_name[0] + class_name[1]
-    #         class_name = class_name.capitalize()
-    #         print("_->", class_name)
-    #     else:
-    #         class_name = ro.data_model[0].capitalize()
-
-    #     row1 = (f'class {class_name}(models.Model):')
-    #     row2 = (
-    #         f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
-    #     row3 = (f'      {ro.data_name[0]} = fields.{ro.data_type[0]}()')
-
-    #     f.write(row1)
-    #     f.write('\n')
-    #     f.write(row2)
-    #     f.write('\n')
-    #     f.write(row3)
-    #     f.write('\n')
-    #     f.write('\n')
 
 def time_stamp_filename():
     """
@@ -314,21 +288,21 @@ def main():
     file_name = "ir_model.xml"
     model_objects = loop_ir_model_fields(file_name)
 
-    for i in model_and_fields:
-        print("jee", i.data_model[0])
-        
-    for i in model_objects:
-        print("jee--->", i.data_model[0])
+    # for i in model_and_fields:
+    #     print("jee", i.data_model[0])
+
+    # for i in model_objects:
+    #     print("jee--->", i.data_model[0])
     # model_objects = loop_ir_model()
-    # # 4. Concanate and refine model data and field data
-    # refined_objects, individual_models = refine_data(
-    #     model_and_fields, model_objects)
+    # 4. Concanate and refine model data and field data
+    refined_objects, individual_models = refine_data(
+        model_and_fields, model_objects)
 
     # # 5. Writes file from the refined list of objects.
-    # write_data(refined_objects, result_file_name, individual_models)
+    write_data(refined_objects, result_file_name, individual_models)
     # # A end time for a performance comparision
-    # end = time.time()
-    # print("Performance result--> ", end - start)
+    end = time.time()
+    print("Performance result--> ", end - start)
 
 
 if __name__ == "__main__":
@@ -336,7 +310,7 @@ if __name__ == "__main__":
     Two functions
     """
     # A start time for a performance comparision.
-    # start = time.time()
+    start = time.time()
     # Run unit tests.
-    # odoo_test()
+    odoo_test()
     main()
