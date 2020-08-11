@@ -16,6 +16,7 @@ class ValidString:
     1. If "ttype" capitalize a first letter.
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
+    4. If data type is "field_description". No modifications.
     Please note that descriptor also saves instances type!
     """
 
@@ -86,7 +87,7 @@ def loop_ir_model_fields(file_name):
     4. field description
     Returns: A object_list full Model() instances.
     """
-    object_list = set()
+    object_list = []
     # Specified file name.
 
     full_file = os.path.abspath(os.path.join(file_name))
@@ -121,9 +122,28 @@ def loop_ir_model_fields(file_name):
         else:
             pass
 
-        object_list.add(p)
+        object_list.append(p)
 
     return object_list
+
+
+def individual_models(model_and_fields, model_objects):
+    """
+    The function individual_models only task is to encapsulate all unique models
+    to one trustful list, where it can looper through in further occasions.
+    It takes in 
+    1. model_and_fields
+    2. model_objects
+    Return set list with unique values.
+    """
+
+    all_models = set()
+
+    for m in model_and_fields:
+        all_models.add(m.data_model)
+
+    for m in model_objects:
+        all_models.add(m.data_model)
 
 
 def refine_data(model_and_fields, model_objects):
@@ -190,12 +210,12 @@ def write_data(refined_objects, result_file_name, individual_models):
                 if "." in ro.data_model[0]:
                     class_name = ro.data_model[0].split(".")
                     class_name = class_name[1].capitalize()
-                    print(".->", class_name)
+                    # print(".->", class_name)
                 elif "_" in ro.data_model[0]:
                     class_name = ro.data_model[0].split("_")
                     class_name = class_name[0] + class_name[1]
                     class_name = class_name.capitalize()
-                    print("_->", class_name)
+                    # print("_->", class_name)
                 else:
                     class_name = ro.data_model[0].capitalize()
                 check = True
@@ -287,16 +307,26 @@ def main():
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
     model_objects = loop_ir_model_fields(file_name)
+    print("model and field", len(model_and_fields))
+    print("lenght model object", len(model_objects))
+
+    individual_models = individual_models(model_and_fields, model_objects)
 
     # for i in model_and_fields:
-    #     print("jee", i.data_model[0])
+    #     print("model_and_fields-->", i.data_model[0])
 
     # for i in model_objects:
-    #     print("jee--->", i.data_model[0])
+    #     print("model_objects-->", i.data_model[0])
     # model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
     refined_objects, individual_models = refine_data(
         model_and_fields, model_objects)
+
+    print("refined objects", len(refined_objects))
+    print("individual models", len(individual_models))
+
+    for tt in individual_models:
+        print("models", tt)
 
     # # 5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name, individual_models)
