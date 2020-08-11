@@ -131,7 +131,7 @@ def individual_models(model_and_fields, model_objects):
     """
     The function individual_models only task is to encapsulate all unique models
     to one trustful list, where it can looper through in further occasions.
-    It takes in 
+    It takes in
     1. model_and_fields
     2. model_objects
     Returns
@@ -166,7 +166,7 @@ def individual_models(model_and_fields, model_objects):
     print(name_models, "lenght of name_models", len(name_models))
     print(empty_models, "emptyModels", len(empty_models))
 
-    return inherit_models, name_models, empty_models
+    return all_models, inherit_models, name_models, empty_models
 
 
 def refine_data(model_and_fields, inherit_models, name_models, empty_models):
@@ -179,37 +179,42 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     """
     # List for refined objects
     refined_objects = set()
-    individual_models = set()
-    # objects_dict = defaultdict(set)
 
-    for elem in model_and_fields:
-        # A creation of instance.
+    for elem in empty_models:
         ro = Model()
-        found_match = False
-        for elem1 in model_objects:
-            if elem.data_model == elem1.data_model:
-                found_match = True
-                break
-
-        # Because no match found value is "_inherit"
-        if found_match == True:
-            ro.data_name_or_inherit = ("_name", "name")
-        else:
-            ro.data_name_or_inherit = ("_inherit", "name")
-
-        # Collect all possibly datamodels
-        individual_models.add(elem.data_model[0])
-
-        ro.data_model = (elem.data_model[0], elem.data_model[1])
-        ro.data_name = (elem.data_name[0], elem.data_name[1])
-        ro.data_type = (elem.data_type[0], elem.data_type[1])
-        ro.data_desc = (elem.data_desc[0], elem.data_desc[1])
+        print(elem)
+        ro.data_model = (elem[0], elem[1])
         refined_objects.add(ro)
-        # objects_dict[elem.data_model[0]] = ro
-    return refined_objects, individual_models
+
+    for elem in inherit_models:
+        for elem1 in model_and_fields:
+            if elem[0] == elem1.data_model[0]:
+                ro = Model()
+                ro.data_model = (elem1.data_model[0], elem1.data_model[1])
+                ro.data_name = (elem1.data_name[0], elem1.data_name[1])
+                ro.data_type = (elem1.data_type[0], elem1.data_type[1])
+                ro.data_desc = (elem1.data_desc[0], elem1.data_desc[1])
+                ro.data_name_or_inherit = ("_inherit", "name")
+                refined_objects.add(ro)
+            else:
+                pass
+
+    for elem in name_models:
+        for elem1 in model_and_fields:
+            if elem[0] == elem1.data_model[0]:
+                ro = Model()
+                ro.data_model = (elem1.data_model[0], elem1.data_model[1])
+                ro.data_name = (elem1.data_name[0], elem1.data_name[1])
+                ro.data_type = (elem1.data_type[0], elem1.data_type[1])
+                ro.data_desc = (elem1.data_desc[0], elem1.data_desc[1])
+                ro.data_name_or_inherit = ("_name", "name")
+            else:
+                pass
+
+    return refined_objects
 
 
-def write_data(refined_objects, result_file_name, individual_models):
+def write_data(refined_objects, result_file_name, all_models):
     """
     Writes refined objects to time stamped file name
     Returns: Time-stamped Python file.
@@ -224,12 +229,10 @@ def write_data(refined_objects, result_file_name, individual_models):
     f.write('\n')
     f.write('\n')
 
-    for model in individual_models:
-        # print(model)
+    for model in all_models:
         check = False
-        # f.write('\n')
         for ro in refined_objects:
-            if model == ro.data_model[0] and check == False:
+            if model == ro.data_model and check == False:
                 if "." in ro.data_model[0]:
                     class_name = ro.data_model[0].split(".")
                     class_name = class_name[1].capitalize()
@@ -242,22 +245,20 @@ def write_data(refined_objects, result_file_name, individual_models):
                 else:
                     class_name = ro.data_model[0].capitalize()
                 check = True
-                row1 = (f'class {class_name}(models.Model):')
-                row2 = (
-                    f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
-                f.write('\n')
-                f.write(row1)
-                f.write('\n')
-                f.write(row2)
-                f.write('\n')
-
-            if check == True:
-                # f.write('\n')
-                row3 = (
-                    f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
-                # f.write('\n')
-                f.write(row3)
-                f.write('\n')
+        row1 = (f'class {class_name}(models.Model):')
+        row2 = (
+            f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+        f.write('\n')
+        f.write(row1)
+        f.write('\n')
+        f.write(row2)
+        f.write('\n')
+        # f.write('\n')
+        row3 = (
+            f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
+        # f.write('\n')
+        f.write(row3)
+        f.write('\n')
 
 
 def time_stamp_filename():
@@ -333,7 +334,7 @@ def main():
     print("model and field", len(model_and_fields))
     print("lenght model object", len(model_objects))
 
-    inherit_models, name_models, empty_models = individual_models(
+    all_models, inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
 
     # for i in model_and_fields:
@@ -346,15 +347,53 @@ def main():
     refined_objects = refine_data(
         model_and_fields, inherit_models, name_models, empty_models)
 
-    # print("refined objects", len(refined_objects))
+    print("refined objects", len(refined_objects))
     # print("individual models", len(all_models))
+    for ii in refined_objects:
+        print("****************")
+        if ii.data_model != None:
+            print(ii.data_model[0])
+        else:
+            pass
+        if ii.data_name != None:
+            print(ii.data_name[0])
+        else:
+            pass
+        if ii.data_type != None:
+            print(ii.data_type[0])
+        else:
+            pass
+        if ii.data_name_or_inherit != None:
+            print(ii.data_name_or_inherit[0])
+        else:
+            pass
+        if ii.data_desc != None:
+            print(ii.data_desc[0])
+        else:
+            pass
+        print("****************")
+
+        # elem2 = c.find('.//field[@name="ttype"]')
+        # if elem2 != None:
+        #     p.data_type = (elem2.text, "ttype")
+        # else:
+        #     pass
+
+        # elem3 = c.find('.//field[@name="field_description"]')
+        # if elem3 != None:
+        #     p.data_desc = (elem3.text, "field_description")
+        # else:
+        #     pass
+        #     print(ii.data_model[0], " ", ii.data_name[0], " ",
+        #           ii.data_name_or_inherit[0], " ", ii.data_desc[0], " ", ii.data_type[0])
 
     # for tt in all_models:
     #     print("models", tt[0])
 
-    # # 5. Writes file from the refined list of objects.
-    # write_data(refined_objects, result_file_name, all_models)
+    # 5. Writes file from the refined list of objects.
+    write_data(refined_objects, result_file_name, all_models)
     # # A end time for a performance comparision
+    print("refined objects", len(refined_objects))
     end = time.time()
     print("Performance result--> ", end - start)
 
