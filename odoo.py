@@ -208,9 +208,8 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
         for elem1 in model_and_fields:
             if elem[0] == elem1.data_model[0]:
                 ro = Model()
-                ro = Model()
                 ro = copy.deepcopy(elem1)
-                ro.data_name_or_inherit = ("_inherit", "name")
+                ro.data_name_or_inherit = ("_name", "name")
                 refined_objects.add(ro)
             else:
                 pass
