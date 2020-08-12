@@ -251,27 +251,29 @@ def write_data(refined_objects, result_file_name, all_models):
         row1 = (f'class {class_name}(models.Model):')
         f.write('\n')
         f.write(row1)
-
+        f.write('\n')
+        
         for ro in refined_objects:
 
             if model[0] == ro.data_model[0] and check == False:
                 if ro.data_name_or_inherit != None and ro.data_model != None:
                     row2 = (
                         f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
-                    f.write('\n')
+                    # f.write('\n')
                     f.write(row2)
-                    f.write('\n')
+                    # f.write('\n')
                     check = True
             elif model[0] == ro.data_model[0] and check == True:
                 if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
                     f.write('\n')
                     row3 = (
                         f'       {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
-                    f.write('\n')
+                    # f.write('\n')
                     f.write(row3)
-                    f.write('\n')
+                    # f.write('\n')
 
-
+        f.write('\n')
+        f.write('\n')
 
 def time_stamp_filename():
     """
@@ -361,29 +363,29 @@ def main():
 
     print("refined objects", len(refined_objects))
     # print("individual models", len(all_models))
-    for ii in refined_objects:
-        print("****************")
-        if ii.data_model != None:
-            print(ii.data_model[0])
-        else:
-            pass
-        if ii.data_name != None:
-            print(ii.data_name[0])
-        else:
-            pass
-        if ii.data_type != None:
-            print(ii.data_type[0])
-        else:
-            pass
-        if ii.data_name_or_inherit != None:
-            print(ii.data_name_or_inherit[0])
-        else:
-            pass
-        if ii.data_desc != None:
-            print(ii.data_desc[0])
-        else:
-            pass
-        print("****************")
+    # for ii in refined_objects:
+    #     print("****************")
+    #     if ii.data_model != None:
+    #         print(ii.data_model[0])
+    #     else:
+    #         pass
+    #     if ii.data_name != None:
+    #         print(ii.data_name[0])
+    #     else:
+    #         pass
+    #     if ii.data_type != None:
+    #         print(ii.data_type[0])
+    #     else:
+    #         pass
+    #     if ii.data_name_or_inherit != None:
+    #         print(ii.data_name_or_inherit[0])
+    #     else:
+    #         pass
+    #     if ii.data_desc != None:
+    #         print(ii.data_desc[0])
+    #     else:
+    #         pass
+    #     print("****************")
 
         # elem2 = c.find('.//field[@name="ttype"]')
         # if elem2 != None:
