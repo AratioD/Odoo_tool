@@ -160,6 +160,7 @@ def individual_models(model_and_fields, model_objects):
     name_models = temp0_models.intersection(temp1_models)
     # Create a set of empty_models.
     empty_models = all_models.difference(name_models | inherit_models)
+
     print(temp0_models, "models and fields")
     print(temp1_models, "model objects")
     print(inherit_models, "lenght of inherit_models", len(inherit_models))
@@ -230,35 +231,46 @@ def write_data(refined_objects, result_file_name, all_models):
     f.write('\n')
 
     for model in all_models:
+        #Indicator is False or True
         check = False
-        for ro in refined_objects:
-            if model == ro.data_model and check == False:
-                if "." in ro.data_model[0]:
-                    class_name = ro.data_model[0].split(".")
-                    class_name = class_name[1].capitalize()
-                    # print(".->", class_name)
-                elif "_" in ro.data_model[0]:
-                    class_name = ro.data_model[0].split("_")
-                    class_name = class_name[0] + class_name[1]
-                    class_name = class_name.capitalize()
-                    # print("_->", class_name)
-                else:
-                    class_name = ro.data_model[0].capitalize()
-                check = True
+
+        if "." in model[0]:
+            class_name = model[0].split(".")
+            print(class_name)
+            class_name = class_name[1].capitalize()
+            # print(".->", class_name)
+        elif "_" in model[0]:
+            class_name = model[0].split("_")
+            class_name = class_name[0] + class_name[1]
+            class_name = class_name.capitalize()
+
+        else:
+            class_name = model[0]
+            class_name = class_name[1].capitalize()
+
         row1 = (f'class {class_name}(models.Model):')
-        row2 = (
-            f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
         f.write('\n')
         f.write(row1)
-        f.write('\n')
-        f.write(row2)
-        f.write('\n')
-        # f.write('\n')
-        row3 = (
-            f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
-        # f.write('\n')
-        f.write(row3)
-        f.write('\n')
+
+        for ro in refined_objects:
+
+            if model[0] == ro.data_model[0] and check == False:
+                if ro.data_name_or_inherit != None and ro.data_model != None:
+                    row2 = (
+                        f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+                    f.write('\n')
+                    f.write(row2)
+                    f.write('\n')
+                    check = True
+            elif model[0] == ro.data_model[0] and check == True:
+                if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
+                    f.write('\n')
+                    row3 = (
+                        f'       {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
+                    f.write('\n')
+                    f.write(row3)
+                    f.write('\n')
+
 
 
 def time_stamp_filename():
