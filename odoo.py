@@ -60,6 +60,9 @@ class ValidString:
         else:
             return NotImplemented
 
+    # def __str__(self):
+    #     return "Objec(data_model-->{0}, data_name-->{1})".format(self.data_type, self.data_name, self.data_model, self.data_name_or_inherit, self.data_desc)
+
 
 class Model:
     """
@@ -69,6 +72,7 @@ class Model:
     2. data_name = ValidString(2)
     3. data_model = ValidString(2)
     4. data_name_or_inherit = ValidString(2)
+    5. data_desc = ValidString(0)
     """
     data_type = ValidString(2)
     data_name = ValidString(2)
@@ -183,7 +187,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
 
     for elem in empty_models:
         ro = Model()
-        print(elem)
+        # print(elem)
         ro.data_model = (elem[0], elem[1])
         refined_objects.add(ro)
 
@@ -209,6 +213,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
                 ro.data_type = (elem1.data_type[0], elem1.data_type[1])
                 ro.data_desc = (elem1.data_desc[0], elem1.data_desc[1])
                 ro.data_name_or_inherit = ("_name", "name")
+                refined_objects.add(ro)
             else:
                 pass
 
@@ -238,12 +243,10 @@ def write_data(refined_objects, result_file_name, all_models):
             class_name = model[0].split(".")
             print(class_name)
             class_name = class_name[1].capitalize()
-            # print(".->", class_name)
         elif "_" in model[0]:
             class_name = model[0].split("_")
             class_name = class_name[0] + class_name[1]
             class_name = class_name.capitalize()
-
         else:
             class_name = model[0]
             class_name = class_name[1].capitalize()
@@ -252,10 +255,10 @@ def write_data(refined_objects, result_file_name, all_models):
         f.write('\n')
         f.write(row1)
         f.write('\n')
-        
+
         for ro in refined_objects:
 
-            if model[0] == ro.data_model[0] and check == False and ro.data_model != None :
+            if model[0] == ro.data_model[0] and check == False and ro.data_model != None:
                 if ro.data_name_or_inherit != None:
                     row2 = (
                         f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
@@ -263,20 +266,20 @@ def write_data(refined_objects, result_file_name, all_models):
                     check = True
                 else:
                     row2 = (
-                        f'      {"not working"} = \'{ro.data_model[0]}\'')
+                        f'      {"_inherit"} = \'{ro.data_model[0]}\'')
                     f.write(row2)
                     check = True
-                        
-                    
+
             elif model[0] == ro.data_model[0] and check == True:
                 if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
                     f.write('\n')
                     row3 = (
                         f'     {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
                     f.write(row3)
-                    
+
         f.write('\n')
         f.write('\n')
+
 
 def time_stamp_filename():
     """
@@ -350,6 +353,7 @@ def main():
     model_objects = loop_ir_model_fields(file_name)
     print("model and field", len(model_and_fields))
     print("lenght model object", len(model_objects))
+    
 
     all_models, inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
@@ -365,48 +369,12 @@ def main():
         model_and_fields, inherit_models, name_models, empty_models)
 
     print("refined objects", len(refined_objects))
-    # print("individual models", len(all_models))
-    # for ii in refined_objects:
-    #     print("****************")
-    #     if ii.data_model != None:
-    #         print(ii.data_model[0])
-    #     else:
-    #         pass
-    #     if ii.data_name != None:
-    #         print(ii.data_name[0])
-    #     else:
-    #         pass
-    #     if ii.data_type != None:
-    #         print(ii.data_type[0])
-    #     else:
-    #         pass
-    #     if ii.data_name_or_inherit != None:
-    #         print(ii.data_name_or_inherit[0])
-    #     else:
-    #         pass
-    #     if ii.data_desc != None:
-    #         print(ii.data_desc[0])
-    #     else:
-    #         pass
-    #     print("****************")
 
-        # elem2 = c.find('.//field[@name="ttype"]')
-        # if elem2 != None:
-        #     p.data_type = (elem2.text, "ttype")
-        # else:
-        #     pass
-
-        # elem3 = c.find('.//field[@name="field_description"]')
-        # if elem3 != None:
-        #     p.data_desc = (elem3.text, "field_description")
-        # else:
-        #     pass
-        #     print(ii.data_model[0], " ", ii.data_name[0], " ",
-        #           ii.data_name_or_inherit[0], " ", ii.data_desc[0], " ", ii.data_type[0])
-
-    # for tt in all_models:
-    #     print("models", tt[0])
-
+    for dd in refined_objects:
+        print("********",  dd.data_model[0])
+        if dd.data_model[0] == "x_attachements":
+            print(dd.data_model[0], " ", dd.data_name, " ",
+                  dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
     # 5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name, all_models)
     # # A end time for a performance comparision
