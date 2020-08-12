@@ -153,12 +153,33 @@ def individual_models(model_and_fields, model_objects):
     temp1_models = set()
 
     for m in model_and_fields:
-        all_models.add(m.data_model)
-        temp0_models.add(m.data_model)
+        if "." in m.data_model[0]:
+            class_name = m.data_model[0].split(".")
+            class_name = class_name[1].capitalize()
+        elif "_" in m.data_model[0]:
+            class_name = m.data_model[0].split("_")
+            class_name = class_name[0] + class_name[1]
+            class_name = class_name.capitalize()
+        else:
+            class_name = m
+            class_name = class_name[1].capitalize()
+        all_models.add(class_name)
+        temp0_models.add(class_name)
 
     for m in model_objects:
-        all_models.add(m.data_model)
-        temp1_models.add(m.data_model)
+        if "." in m.data_model[0]:
+            class_name = m.data_model[0].split(".")
+            class_name = class_name[1].capitalize()
+        elif "_" in m.data_model[0]:
+            class_name = m.data_model[0].split("_")
+            class_name = class_name[0] + class_name[1]
+            class_name = class_name.capitalize()
+        else:
+            class_name = m
+            class_name = class_name[1].capitalize()
+        all_models.add(class_name)
+        temp0_models.add(class_name)
+        
     # Create a set of _inherit models.
     inherit_models = temp0_models - temp1_models
     # Create a set of _name models.
@@ -217,7 +238,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     return refined_objects
 
 
-def write_data(refined_objects, result_file_name, all_models):
+def write_data(refined_objects, result_file_name, inherit_models, name_models, empty_models):
     """
     Writes refined objects to time stamped file name
     Returns: Time-stamped Python file.
@@ -225,57 +246,64 @@ def write_data(refined_objects, result_file_name, all_models):
 
     f = open(result_file_name, "a")
 
-    # Imports to py file.
-    row0 = (f'from odoo import models, fields')
+    # # Imports to py file.
+    # row0 = (f'from odoo import models, fields')
 
-    f.write(row0)
-    f.write('\n')
-    f.write('\n')
+    # f.write(row0)
+    # f.write('\n')
+    # f.write('\n')
 
-    for model in all_models:
-        #Indicator is False or True
-        check = False
+    # for elem in empty_models:
 
-        if "." in model[0]:
-            class_name = model[0].split(".")
-            print(class_name)
-            class_name = class_name[1].capitalize()
-        elif "_" in model[0]:
-            class_name = model[0].split("_")
-            class_name = class_name[0] + class_name[1]
-            class_name = class_name.capitalize()
-        else:
-            class_name = model[0]
-            class_name = class_name[1].capitalize()
+    #     row1 = (f'class {class_name}(models.Model):')
+    #     f.write('\n')
+    #     f.write(row1)
+    #     f.write('\n')
 
-        row1 = (f'class {class_name}(models.Model):')
-        f.write('\n')
-        f.write(row1)
-        f.write('\n')
+    # for model in all_models:
+    #     #Indicator is False or True
+    #     check = False
 
-        for ro in refined_objects:
+    #     if "." in model[0]:
+    #         class_name = model[0].split(".")
+    #         print(class_name)
+    #         class_name = class_name[1].capitalize()
+    #     elif "_" in model[0]:
+    #         class_name = model[0].split("_")
+    #         class_name = class_name[0] + class_name[1]
+    #         class_name = class_name.capitalize()
+    #     else:
+    #         class_name = model[0]
+    #         class_name = class_name[1].capitalize()
 
-            if model[0] == ro.data_model[0] and check == False and ro.data_model != None:
-                if ro.data_name_or_inherit != None:
-                    row2 = (
-                        f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
-                    f.write(row2)
-                    check = True
-                else:
-                    row2 = (
-                        f'      {"_inherit"} = \'{ro.data_model[0]}\'')
-                    f.write(row2)
-                    check = True
+    #     row1 = (f'class {class_name}(models.Model):')
+    #     f.write('\n')
+    #     f.write(row1)
+    #     f.write('\n')
 
-            elif model[0] == ro.data_model[0] and check == True:
-                if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
-                    f.write('\n')
-                    row3 = (
-                        f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
-                    f.write(row3)
+    #     for ro in refined_objects:
 
-        f.write('\n')
-        f.write('\n')
+    #         if model[0] == ro.data_model[0] and check == False and ro.data_model != None:
+    #             if ro.data_name_or_inherit != None:
+    #                 row2 = (
+    #                     f'      {ro.data_name_or_inherit[0]} = \'{ro.data_model[0]}\'')
+    #                 f.write(row2)
+    #                 check = True
+    #             else:
+    #                 row2 = (
+    #                     f'      {"_inherit"} = \'{ro.data_model[0]}\'')
+    #                 f.write(row2)
+    #                 check = True
+
+    #         elif model[0] == ro.data_model[0] and check == True:
+    #             if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
+    #                 f.write('\n')
+    #                 row3 = (
+    #                     f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
+    #                 f.write(row3)
+
+    #     f.write('\n')
+    #     f.write('\n')
 
 
 def time_stamp_filename():
@@ -375,13 +403,14 @@ def main():
     #         print(k, vv.data_model[0], " ", vv.data_name, " ",
     #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
 
-    # for dd in refined_objects:
-    #     print("********",  dd.data_model[0])
-    #     if dd.data_model[0] == "x_attachements":
-    #         print(dd.data_model[0], " ", dd.data_name, " ",
-    #               dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
+    for dd in refined_objects:
+        # print("********",  dd.data_model[0])
+        if dd.data_model[0] == "Product":
+            print(dd.data_model[0], " ", dd.data_name, " ",
+                  dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
     #  5. Writes file from the refined list of objects.
-    write_data(refined_objects, result_file_name, all_models)
+    write_data(refined_objects, result_file_name,
+               inherit_models, name_models, empty_models)
     # # A end time for a performance comparision
     print("refined objects", len(refined_objects))
     end = time.time()
