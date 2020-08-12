@@ -4,6 +4,7 @@
 import time
 import os
 import datetime
+import copy
 import re
 from xml.etree import ElementTree
 from collections import defaultdict
@@ -184,21 +185,20 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     """
     # List for refined objects
     refined_objects = set()
+    refined_obj = defaultdict(dict)
 
     for elem in empty_models:
         ro = Model()
         # print(elem)
         ro.data_model = (elem[0], elem[1])
+        ro.data_name_or_inherit = ("_inherit", "name")
         refined_objects.add(ro)
 
     for elem in inherit_models:
         for elem1 in model_and_fields:
             if elem[0] == elem1.data_model[0]:
                 ro = Model()
-                ro.data_model = (elem1.data_model[0], elem1.data_model[1])
-                ro.data_name = (elem1.data_name[0], elem1.data_name[1])
-                ro.data_type = (elem1.data_type[0], elem1.data_type[1])
-                ro.data_desc = (elem1.data_desc[0], elem1.data_desc[1])
+                ro = copy.deepcopy(elem1)
                 ro.data_name_or_inherit = ("_inherit", "name")
                 refined_objects.add(ro)
             else:
@@ -208,11 +208,9 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
         for elem1 in model_and_fields:
             if elem[0] == elem1.data_model[0]:
                 ro = Model()
-                ro.data_model = (elem1.data_model[0], elem1.data_model[1])
-                ro.data_name = (elem1.data_name[0], elem1.data_name[1])
-                ro.data_type = (elem1.data_type[0], elem1.data_type[1])
-                ro.data_desc = (elem1.data_desc[0], elem1.data_desc[1])
-                ro.data_name_or_inherit = ("_name", "name")
+                ro = Model()
+                ro = copy.deepcopy(elem1)
+                ro.data_name_or_inherit = ("_inherit", "name")
                 refined_objects.add(ro)
             else:
                 pass
@@ -274,7 +272,7 @@ def write_data(refined_objects, result_file_name, all_models):
                 if ro.data_name != None and ro.data_type != None and ro.data_desc != None:
                     f.write('\n')
                     row3 = (
-                        f'     {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
+                        f'      {ro.data_name[0]} = fields.{ro.data_type[0]}(string="{ro.data_desc[0]}")')
                     f.write(row3)
 
         f.write('\n')
@@ -353,7 +351,6 @@ def main():
     model_objects = loop_ir_model_fields(file_name)
     print("model and field", len(model_and_fields))
     print("lenght model object", len(model_objects))
-    
 
     all_models, inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
@@ -370,12 +367,21 @@ def main():
 
     print("refined objects", len(refined_objects))
 
-    for dd in refined_objects:
-        print("********",  dd.data_model[0])
-        if dd.data_model[0] == "x_attachements":
-            print(dd.data_model[0], " ", dd.data_name, " ",
-                  dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
-    # 5. Writes file from the refined list of objects.
+    # for ee in model_and_fields:
+    #     if ee.data_model[0] == "product.product":
+    #         print(ee.data_model, " ", ee.data_name, " ",
+    #               ee.data_name_or_inherit, " ", ee.data_type, " ", ee.data_desc)
+
+    # for k, vv in refined_objects.items():
+    #         print(k, vv.data_model[0], " ", vv.data_name, " ",
+    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+
+    # for dd in refined_objects:
+    #     print("********",  dd.data_model[0])
+    #     if dd.data_model[0] == "x_attachements":
+    #         print(dd.data_model[0], " ", dd.data_name, " ",
+    #               dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
+    #  5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name, all_models)
     # # A end time for a performance comparision
     print("refined objects", len(refined_objects))
