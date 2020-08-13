@@ -78,6 +78,7 @@ class Model:
     data_type = ValidString(2)
     data_name = ValidString(2)
     data_model = ValidString(2)
+    data_class = ValidString(2)
     data_name_or_inherit = ValidString(2)
     data_desc = ValidString(0)
 
@@ -153,33 +154,35 @@ def individual_models(model_and_fields, model_objects):
     temp1_models = set()
 
     for m in model_and_fields:
-        if "." in m.data_model[0]:
-            class_name = m.data_model[0].split(".")
-            class_name = class_name[1].capitalize()
-        elif "_" in m.data_model[0]:
-            class_name = m.data_model[0].split("_")
-            class_name = class_name[0] + class_name[1]
-            class_name = class_name.capitalize()
-        else:
-            class_name = m
-            class_name = class_name[1].capitalize()
-        all_models.add(class_name)
-        temp0_models.add(class_name)
+        # if "." in m.data_model[0]:
+        #     class_name = m.data_model[0].split(".")
+        #     class_name = class_name[1].capitalize()
+        # elif "_" in m.data_model[0]:
+        #     class_name = m.data_model[0].split("_")
+        #     class_name = class_name[0] + class_name[1]
+        #     class_name = class_name.capitalize()
+        # else:
+        #     class_name = m
+        #     class_name = class_name[1].capitalize()
+        all_models.add(m.data_model[0])
+        temp0_models.add(m.data_model[0])
 
     for m in model_objects:
-        if "." in m.data_model[0]:
-            class_name = m.data_model[0].split(".")
-            class_name = class_name[1].capitalize()
-        elif "_" in m.data_model[0]:
-            class_name = m.data_model[0].split("_")
-            class_name = class_name[0] + class_name[1]
-            class_name = class_name.capitalize()
-        else:
-            class_name = m
-            class_name = class_name[1].capitalize()
-        all_models.add(class_name)
-        temp0_models.add(class_name)
-        
+        # if "." in m.data_model[0]:
+        #     class_name = m.data_model[0].split(".")
+        #     class_name = class_name[1].capitalize()
+        # elif "_" in m.data_model[0]:
+        #     class_name = m.data_model[0].split("_")
+        #     class_name = class_name[0] + class_name[1]
+        #     class_name = class_name.capitalize()
+        # else:
+        #     class_name = m
+        #     class_name = class_name[1].capitalize()
+        # all_models.add(class_name)
+        # temp1_models.add(class_name)
+        all_models.add(m.data_model[0])
+        temp1_models.add(m.data_model[0])
+
     # Create a set of _inherit models.
     inherit_models = temp0_models - temp1_models
     # Create a set of _name models.
@@ -389,30 +392,30 @@ def main():
     #     print("model_objects-->", i.data_model[0])
     # model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
-    refined_objects = refine_data(
-        model_and_fields, inherit_models, name_models, empty_models)
+    # # refined_objects = refine_data(
+    # #     model_and_fields, inherit_models, name_models, empty_models)
 
-    print("refined objects", len(refined_objects))
+    # print("refined objects", len(refined_objects))
 
-    # for ee in model_and_fields:
-    #     if ee.data_model[0] == "product.product":
-    #         print(ee.data_model, " ", ee.data_name, " ",
-    #               ee.data_name_or_inherit, " ", ee.data_type, " ", ee.data_desc)
+    # # for ee in model_and_fields:
+    # #     if ee.data_model[0] == "product.product":
+    # #         print(ee.data_model, " ", ee.data_name, " ",
+    # #               ee.data_name_or_inherit, " ", ee.data_type, " ", ee.data_desc)
 
-    # for k, vv in refined_objects.items():
-    #         print(k, vv.data_model[0], " ", vv.data_name, " ",
-    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+    # # for k, vv in refined_objects.items():
+    # #         print(k, vv.data_model[0], " ", vv.data_name, " ",
+    # #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
 
-    for dd in refined_objects:
-        # print("********",  dd.data_model[0])
-        if dd.data_model[0] == "Product":
-            print(dd.data_model[0], " ", dd.data_name, " ",
-                  dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
-    #  5. Writes file from the refined list of objects.
-    write_data(refined_objects, result_file_name,
-               inherit_models, name_models, empty_models)
-    # # A end time for a performance comparision
-    print("refined objects", len(refined_objects))
+    # for dd in refined_objects:
+    #     # print("********",  dd.data_model[0])
+    #     if dd.data_model[0] == "Product":
+    #         print(dd.data_model[0], " ", dd.data_name, " ",
+    #               dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
+    # #  5. Writes file from the refined list of objects.
+    # write_data(refined_objects, result_file_name,
+    #            inherit_models, name_models, empty_models)
+    # # # A end time for a performance comparision
+    # print("refined objects", len(refined_objects))
     end = time.time()
     print("Performance result--> ", end - start)
 
