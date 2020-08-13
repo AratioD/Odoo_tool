@@ -18,6 +18,7 @@ class ValidString:
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
     4. If data type is "field_description". No modifications.
+    5. If data type is "class". No modifications.
     Please note that descriptor also saves instances type!
     """
 
@@ -60,10 +61,6 @@ class ValidString:
             return (self.property_name == other.property_name)
         else:
             return NotImplemented
-
-    # def __str__(self):
-    #     return "Objec(data_model-->{0}, data_name-->{1})".format(self.data_type, self.data_name, self.data_model, self.data_name_or_inherit, self.data_desc)
-
 
 class Model:
     """
@@ -274,7 +271,6 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
     f.write('\n')
 
     for elem in empty_models:
-        print(elem)
         for elem1 in refined_objects:
             if elem == elem1.data_model[0]:
                 row1 = (f'class {elem1.data_class[0]}(models.Model):')
@@ -403,8 +399,8 @@ def main():
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
     model_objects = loop_ir_model_fields(file_name)
-    print("model and field", len(model_and_fields))
-    print("lenght model object", len(model_objects))
+    print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
+    print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
 
     inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
