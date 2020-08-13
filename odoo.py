@@ -47,7 +47,7 @@ class ValidString:
                 instance.__dict__[self.property_name] = (temp, value_type)
             else:
                 instance.__dict__[self.property_name] = (value, value_type)
-        elif value_type == "model" or value_type == "field_description":
+        elif value_type == "model" or value_type == "field_description" or value_type == "class":
             instance.__dict__[self.property_name] = (value, value_type)
 
     def __get__(self, instance, owner_class):
@@ -75,11 +75,11 @@ class Model:
     4. data_name_or_inherit = ValidString(2)
     5. data_desc = ValidString(0)
     """
-    data_type = ValidString(2)
-    data_name = ValidString(2)
-    data_model = ValidString(2)
-    data_class = ValidString(2)
-    data_name_or_inherit = ValidString(2)
+    data_type = ValidString(1)
+    data_name = ValidString(1)
+    data_model = ValidString(1)
+    data_class = ValidString(1)
+    data_name_or_inherit = ValidString(1)
     data_desc = ValidString(0)
 
 
@@ -209,20 +209,47 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     """
     # List for refined objects
     refined_objects = set()
-    refined_obj = defaultdict(dict)
 
     for elem in empty_models:
+        # ro = Model()
+        # # print(elem)
+        # ro.data_model = (elem, "model")
+        # ro.data_name_or_inherit = ("_inherit", "name")
+        # refined_objects.add(ro)
         ro = Model()
-        # print(elem)
-        ro.data_model = (elem[0], elem[1])
+
+        if "." in elem:
+            class_name = elem.split(".")
+            ro.data_class = (class_name[1].capitalize(), "class")
+        elif "_" in elem:
+            class_name = elem.split("_")
+            class_name = class_name[0] + class_name[1]
+            ro.data_class = (class_name.capitalize(), "class")
+        else:
+            class_name = elem
+            ro.data_class = (class_name[1].capitalize(), "class")
+
+        ro.data_model = (elem, "model")
         ro.data_name_or_inherit = ("_inherit", "name")
         refined_objects.add(ro)
 
     for elem in inherit_models:
         for elem1 in model_and_fields:
-            if elem[0] == elem1.data_model[0]:
+            if elem == elem1.data_model[0]:
                 ro = Model()
                 ro = copy.deepcopy(elem1)
+
+                if "." in elem1.data_model[0]:
+                    class_name = elem1.data_model[0].split(".")
+                    ro.data_class = (class_name[1].capitalize(), "class")
+                elif "_" in elem1.data_model[0]:
+                    class_name = elem1.data_model[0].split("_")
+                    class_name = class_name[0] + class_name[1]
+                    ro.data_class = (class_name.capitalize(), "class")
+                else:
+                    class_name = elem1.data_model[0]
+                    ro.data_class = (class_name[1].capitalize(), "class")
+
                 ro.data_name_or_inherit = ("_inherit", "name")
                 refined_objects.add(ro)
             else:
@@ -230,9 +257,21 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
 
     for elem in name_models:
         for elem1 in model_and_fields:
-            if elem[0] == elem1.data_model[0]:
+            if elem == elem1.data_model[0]:
                 ro = Model()
                 ro = copy.deepcopy(elem1)
+
+                if "." in elem1.data_model[0]:
+                    class_name = elem1.data_model[0].split(".")
+                    ro.data_class = (class_name[1].capitalize(), "class")
+                elif "_" in elem1.data_model[0]:
+                    class_name = elem1.data_model[0].split("_")
+                    class_name = class_name[0] + class_name[1]
+                    ro.data_class = (class_name.capitalize(), "class")
+                else:
+                    class_name = elem1.data_model[0]
+                    ro.data_class = (class_name[1].capitalize(), "class")
+
                 ro.data_name_or_inherit = ("_name", "name")
                 refined_objects.add(ro)
             else:
@@ -249,19 +288,29 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
 
     f = open(result_file_name, "a")
 
-    # # Imports to py file.
-    # row0 = (f'from odoo import models, fields')
+    # Imports to py file.
+    row0 = (f'from odoo import models, fields')
 
-    # f.write(row0)
-    # f.write('\n')
-    # f.write('\n')
+    f.write(row0)
+    f.write('\n')
+    f.write('\n')
 
-    # for elem in empty_models:
+    for elem in empty_models:
+        print(elem)
+        for elem1 in refined_objects:
+            if elem == elem1.data_model[0]:
+                row1 = (f'class {elem1.data_class[0]}(models.Model):')
+                f.write('\n')
+                f.write(row1)
+                f.write('\n')
+                row2 = (f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+                f.write(row2)
 
-    #     row1 = (f'class {class_name}(models.Model):')
-    #     f.write('\n')
-    #     f.write(row1)
-    #     f.write('\n')
+    for elem in inherit_models:
+        pass
+
+    for elem in name_models:
+        pass
 
     # for model in all_models:
     #     #Indicator is False or True
@@ -385,6 +434,13 @@ def main():
     all_models, inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
 
+    # for vv in model_objects:
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+
+    # for vv in model_and_fields:
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
     # for i in model_and_fields:
     #     print("model_and_fields-->", i.data_model[0])
 
@@ -392,19 +448,29 @@ def main():
     #     print("model_objects-->", i.data_model[0])
     # model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
-    # # refined_objects = refine_data(
-    # #     model_and_fields, inherit_models, name_models, empty_models)
+    refined_objects = refine_data(
+        model_and_fields, inherit_models, name_models, empty_models)
 
-    # print("refined objects", len(refined_objects))
+    # # print("refined objects", len(refined_objects))
 
     # # for ee in model_and_fields:
     # #     if ee.data_model[0] == "product.product":
     # #         print(ee.data_model, " ", ee.data_name, " ",
     # #               ee.data_name_or_inherit, " ", ee.data_type, " ", ee.data_desc)
 
-    # # for k, vv in refined_objects.items():
-    # #         print(k, vv.data_model[0], " ", vv.data_name, " ",
-    # #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+    # print(len(refined_objects))
+    # for vv in refined_objects:
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+    # if vv.data_class[0] == "Partner":
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+    # elif vv.data_class[0] == "Product":
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
+    # elif vv.data_class[0] == "Product":
+    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
+    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
 
     # for dd in refined_objects:
     #     # print("********",  dd.data_model[0])
@@ -412,8 +478,8 @@ def main():
     #         print(dd.data_model[0], " ", dd.data_name, " ",
     #               dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
     # #  5. Writes file from the refined list of objects.
-    # write_data(refined_objects, result_file_name,
-    #            inherit_models, name_models, empty_models)
+    write_data(refined_objects, result_file_name,
+               inherit_models, name_models, empty_models)
     # # # A end time for a performance comparision
     # print("refined objects", len(refined_objects))
     end = time.time()
