@@ -66,11 +66,12 @@ class Model:
     """
     All instance attributes can handle only string data types.
     Class instances are Number inside parenthesis define the lenght of the string.
-    1. data_type = ValidString(2)
-    2. data_name = ValidString(2)
-    3. data_model = ValidString(2)
-    4. data_name_or_inherit = ValidString(2)
-    5. data_desc = ValidString(0)
+    1. data_type = ValidString(1)
+    2. data_name = ValidString(1)
+    3. data_model = ValidString(1)
+    4. data_class = ValidString(1)
+    5. data_name_or_inherit = ValidString(1)
+    6. data_desc = ValidString(0)
     """
     data_type = ValidString(1)
     data_name = ValidString(1)
