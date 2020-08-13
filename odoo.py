@@ -62,6 +62,7 @@ class ValidString:
         else:
             return NotImplemented
 
+
 class Model:
     """
     All instance attributes can handle only string data types.
@@ -260,6 +261,10 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
     """
     Writes refined objects to time stamped file name
     Returns: Time-stamped Python file.
+    Write loop is:
+    1. empty models
+    2. inherit_models
+    3. name_models
     """
 
     f = open(result_file_name, "a")
@@ -389,7 +394,7 @@ def main():
     3. The model collect function. Concanate and refine model data and field data.
     4. The refine data function. Concanate and refine model data and field data
     5. The write refined data to file function.  Writes file from the refined list of objects.
-    5. The end of performace timer.
+    6. The end of performace timer.
     """
 
     # 1. Call a file function to generate a new python file.
@@ -414,6 +419,7 @@ def main():
     write_data(refined_objects, result_file_name,
                inherit_models, name_models, empty_models)
 
+    # 6. The end of performace timer.
     end = time.time()
     print("Performance result--> ", end - start)
 
