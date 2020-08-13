@@ -137,7 +137,7 @@ def individual_models(model_and_fields, model_objects):
     """
     The function individual_models only task is to encapsulate all unique models
     to one trustful list, where it can looper through in further occasions.
-    It takes in
+    The function takes in the following parameters.
     1. model_and_fields
     2. model_objects
     Returns
@@ -154,32 +154,10 @@ def individual_models(model_and_fields, model_objects):
     temp1_models = set()
 
     for m in model_and_fields:
-        # if "." in m.data_model[0]:
-        #     class_name = m.data_model[0].split(".")
-        #     class_name = class_name[1].capitalize()
-        # elif "_" in m.data_model[0]:
-        #     class_name = m.data_model[0].split("_")
-        #     class_name = class_name[0] + class_name[1]
-        #     class_name = class_name.capitalize()
-        # else:
-        #     class_name = m
-        #     class_name = class_name[1].capitalize()
         all_models.add(m.data_model[0])
         temp0_models.add(m.data_model[0])
 
     for m in model_objects:
-        # if "." in m.data_model[0]:
-        #     class_name = m.data_model[0].split(".")
-        #     class_name = class_name[1].capitalize()
-        # elif "_" in m.data_model[0]:
-        #     class_name = m.data_model[0].split("_")
-        #     class_name = class_name[0] + class_name[1]
-        #     class_name = class_name.capitalize()
-        # else:
-        #     class_name = m
-        #     class_name = class_name[1].capitalize()
-        # all_models.add(class_name)
-        # temp1_models.add(class_name)
         all_models.add(m.data_model[0])
         temp1_models.add(m.data_model[0])
 
@@ -190,13 +168,14 @@ def individual_models(model_and_fields, model_objects):
     # Create a set of empty_models.
     empty_models = all_models.difference(name_models | inherit_models)
 
-    print(temp0_models, "models and fields")
-    print(temp1_models, "model objects")
-    print(inherit_models, "lenght of inherit_models", len(inherit_models))
-    print(name_models, "lenght of name_models", len(name_models))
-    print(empty_models, "emptyModels", len(empty_models))
+    print("LENGHT OF INHERIT MODELS", len(inherit_models))
+    print("LENGTH OF NAME MODELS-->", len(name_models))
+    print("EMPTYMODELS SIZE-->", len(empty_models))
+    print("ELEMENTS OF INHERIT MODELS-->", inherit_models)
+    print("ELEMENTS OF NAME MODELS-->", name_models)
+    print("ELEMENTS OF EMPTY MODELS-->", empty_models)
 
-    return all_models, inherit_models, name_models, empty_models
+    return inherit_models, name_models, empty_models
 
 
 def refine_data(model_and_fields, inherit_models, name_models, empty_models):
@@ -204,18 +183,16 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     The function takes two parameters in and returns refined list.
     Parameters are.
     1. model_and_fields
-    2. model_objects
-    Returns: A object_list full Model() instances.
+    2. inherit_models
+    3. name_models
+    4. empty_models
+    Returns: A refined_objects full Model() instances.
     """
     # List for refined objects
     refined_objects = set()
 
+    # Loop empty models
     for elem in empty_models:
-        # ro = Model()
-        # # print(elem)
-        # ro.data_model = (elem, "model")
-        # ro.data_name_or_inherit = ("_inherit", "name")
-        # refined_objects.add(ro)
         ro = Model()
 
         if "." in elem:
@@ -233,6 +210,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
         ro.data_name_or_inherit = ("_inherit", "name")
         refined_objects.add(ro)
 
+    # Loop "_inherit" models
     for elem in inherit_models:
         for elem1 in model_and_fields:
             if elem == elem1.data_model[0]:
@@ -254,7 +232,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
                 refined_objects.add(ro)
             else:
                 pass
-
+    # Loop "_name" models
     for elem in name_models:
         for elem1 in model_and_fields:
             if elem == elem1.data_model[0]:
@@ -303,11 +281,10 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
                 f.write('\n')
                 f.write(row1)
                 f.write('\n')
-                row2 = (f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+                row2 = (
+                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
                 f.write(row2)
                 f.write('\n')
-
-    
 
     for elem in inherit_models:
         check = False
@@ -317,15 +294,18 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
                 f.write('\n')
                 f.write(row1)
                 f.write('\n')
-                row2 = (f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+                row2 = (
+                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
                 f.write(row2)
                 f.write('\n')
-                row3 = (f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+                row3 = (
+                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
                 f.write(row3)
                 f.write('\n')
                 check = True
             elif elem == elem1.data_model[0] and check == True:
-                row3 = (f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+                row3 = (
+                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
                 f.write(row3)
                 f.write('\n')
 
@@ -337,17 +317,21 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
                 f.write('\n')
                 f.write(row1)
                 f.write('\n')
-                row2 = (f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+                row2 = (
+                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
                 f.write(row2)
                 f.write('\n')
-                row3 = (f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+                row3 = (
+                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
                 f.write(row3)
                 f.write('\n')
                 check = True
             elif elem == elem1.data_model[0] and check == True:
-                row3 = (f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+                row3 = (
+                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
                 f.write(row3)
                 f.write('\n')
+
 
 def time_stamp_filename():
     """
@@ -422,57 +406,17 @@ def main():
     print("model and field", len(model_and_fields))
     print("lenght model object", len(model_objects))
 
-    all_models, inherit_models, name_models, empty_models = individual_models(
+    inherit_models, name_models, empty_models = individual_models(
         model_and_fields, model_objects)
 
-    # for vv in model_objects:
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-
-    # for vv in model_and_fields:
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-    # for i in model_and_fields:
-    #     print("model_and_fields-->", i.data_model[0])
-
-    # for i in model_objects:
-    #     print("model_objects-->", i.data_model[0])
-    # model_objects = loop_ir_model()
     # 4. Concanate and refine model data and field data
     refined_objects = refine_data(
         model_and_fields, inherit_models, name_models, empty_models)
 
-    # # print("refined objects", len(refined_objects))
-
-    # # for ee in model_and_fields:
-    # #     if ee.data_model[0] == "product.product":
-    # #         print(ee.data_model, " ", ee.data_name, " ",
-    # #               ee.data_name_or_inherit, " ", ee.data_type, " ", ee.data_desc)
-
-    # print(len(refined_objects))
-    # for vv in refined_objects:
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #               vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-    # if vv.data_class[0] == "Partner":
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-    # elif vv.data_class[0] == "Product":
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-    # elif vv.data_class[0] == "Product":
-    #     print(vv.data_model, " ", vv.data_class, " ",  vv.data_name, " ",
-    #           vv.data_name_or_inherit, " ", vv.data_type, " ", vv.data_desc)
-
-    # for dd in refined_objects:
-    #     # print("********",  dd.data_model[0])
-    #     if dd.data_model[0] == "Product":
-    #         print(dd.data_model[0], " ", dd.data_name, " ",
-    #               dd.data_name_or_inherit, " ", dd.data_type, " ", dd.data_desc)
-    # #  5. Writes file from the refined list of objects.
+    # 5. Writes file from the refined list of objects.
     write_data(refined_objects, result_file_name,
                inherit_models, name_models, empty_models)
-    # # # A end time for a performance comparision
-    # print("refined objects", len(refined_objects))
+
     end = time.time()
     print("Performance result--> ", end - start)
 
