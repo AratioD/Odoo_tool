@@ -2395,7 +2395,7 @@ for record in self: record['x_parent_id__project_task_count'] = dic.get(record.i
     <field eval="[(6, 0, [])]" name="groups"/>
     <field eval="False" name="help"/>
     <field eval="False" name="index"/>
-    <field name="model">project.tags</field>
+    <field name="mode">project.task</field>
     <field ref="project.model_project_tags" name="model_id"/>
     <field name="name">x_currency_id</field>
     <field name="on_delete">set null</field>
