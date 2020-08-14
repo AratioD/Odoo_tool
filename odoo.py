@@ -224,8 +224,12 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
 
     return refined_objects
 
+
 def refine_model(elem):
-    
+    """
+    The function is callable from the function refine_data.
+    """
+    # An empty initialization of class_name function.
     class_name = ""
     if "." in elem:
         class_name = elem.split(".")
@@ -275,47 +279,40 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
         check = False
         for elem1 in refined_objects:
             if elem == elem1.data_model[0] and check == False:
-                row1 = (f'class {elem1.data_class[0]}(models.Model):')
-                f.write('\n')
-                f.write(row1)
-                f.write('\n')
-                row2 = (
-                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
-                f.write(row2)
-                f.write('\n')
-                row3 = (
-                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-                f.write(row3)
-                f.write('\n')
+                write_rows(elem1, check, f)
                 check = True
             elif elem == elem1.data_model[0] and check == True:
-                row3 = (
-                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-                f.write(row3)
-                f.write('\n')
+                write_rows(elem1, check, f)
 
     for elem in name_models:
         check = False
         for elem1 in refined_objects:
             if elem == elem1.data_model[0] and check == False:
-                row1 = (f'class {elem1.data_class[0]}(models.Model):')
-                f.write('\n')
-                f.write(row1)
-                f.write('\n')
-                row2 = (
-                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
-                f.write(row2)
-                f.write('\n')
-                row3 = (
-                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-                f.write(row3)
-                f.write('\n')
+                write_rows(elem1, check, f)
                 check = True
             elif elem == elem1.data_model[0] and check == True:
-                row3 = (
-                    f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-                f.write(row3)
-                f.write('\n')
+                write_rows(elem1, check, f)
+
+
+def write_rows(elem1, check, f):
+    if check == False:
+        row1 = (f'class {elem1.data_class[0]}(models.Model):')
+        f.write('\n')
+        f.write(row1)
+        f.write('\n')
+        row2 = (
+            f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+        f.write(row2)
+        f.write('\n')
+        row3 = (
+            f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+        f.write(row3)
+        f.write('\n')
+    elif check == True:
+        row3 = (
+            f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+        f.write(row3)
+        f.write('\n')
 
 
 def time_stamp_filename():
