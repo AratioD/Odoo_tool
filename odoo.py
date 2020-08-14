@@ -193,19 +193,9 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
     # Loop empty models
     for elem in empty_models:
         ro = Model()
-
-        if "." in elem:
-            class_name = elem.split(".")
-            ro.data_class = (class_name[1].capitalize(), "class")
-        elif "_" in elem:
-            class_name = elem.split("_")
-            class_name = class_name[0] + class_name[1]
-            ro.data_class = (class_name.capitalize(), "class")
-        else:
-            class_name = elem
-            ro.data_class = (class_name[1].capitalize(), "class")
-
+        ro.data_class = (elem, "class")
         ro.data_model = (elem, "model")
+        ro.data_class = (refine_model(elem), "class")
         ro.data_name_or_inherit = ("_inherit", "name")
         refined_objects.add(ro)
 
@@ -215,18 +205,7 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
             if elem == elem1.data_model[0]:
                 ro = Model()
                 ro = copy.deepcopy(elem1)
-
-                if "." in elem1.data_model[0]:
-                    class_name = elem1.data_model[0].split(".")
-                    ro.data_class = (class_name[1].capitalize(), "class")
-                elif "_" in elem1.data_model[0]:
-                    class_name = elem1.data_model[0].split("_")
-                    class_name = class_name[0] + class_name[1]
-                    ro.data_class = (class_name.capitalize(), "class")
-                else:
-                    class_name = elem1.data_model[0]
-                    ro.data_class = (class_name[1].capitalize(), "class")
-
+                ro.data_class = (refine_model(elem1.data_model[0]), "class")
                 ro.data_name_or_inherit = ("_inherit", "name")
                 refined_objects.add(ro)
             else:
@@ -237,24 +216,28 @@ def refine_data(model_and_fields, inherit_models, name_models, empty_models):
             if elem == elem1.data_model[0]:
                 ro = Model()
                 ro = copy.deepcopy(elem1)
-
-                if "." in elem1.data_model[0]:
-                    class_name = elem1.data_model[0].split(".")
-                    ro.data_class = (class_name[1].capitalize(), "class")
-                elif "_" in elem1.data_model[0]:
-                    class_name = elem1.data_model[0].split("_")
-                    class_name = class_name[0] + class_name[1]
-                    ro.data_class = (class_name.capitalize(), "class")
-                else:
-                    class_name = elem1.data_model[0]
-                    ro.data_class = (class_name[1].capitalize(), "class")
-
+                ro.data_class = (refine_model(elem1.data_model[0]), "class")
                 ro.data_name_or_inherit = ("_name", "name")
                 refined_objects.add(ro)
             else:
                 pass
 
     return refined_objects
+
+def refine_model(elem):
+    
+    class_name = ""
+    if "." in elem:
+        class_name = elem.split(".")
+        class_name = class_name[1].capitalize()
+    elif "_" in elem:
+        class_name = elem.split("_")
+        class_name = class_name[0] + class_name[1]
+        class_name = class_name.capitalize()
+    else:
+        class_name = elem
+        class_name = class_name[1].capitalize()
+    return class_name
 
 
 def write_data(refined_objects, result_file_name, inherit_models, name_models, empty_models):
