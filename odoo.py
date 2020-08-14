@@ -92,7 +92,7 @@ def loop_ir_model_fields(file_name):
     4. field description
     Returns: A object_list full Model() instances.
     """
-    object_list = []
+    object_list = set()
     # Specified file name.
 
     full_file = os.path.abspath(os.path.join(file_name))
@@ -100,6 +100,7 @@ def loop_ir_model_fields(file_name):
     # <record model="ir.model.fields" from XML file
     records = dom.findall('record')
 
+    # Checkout how to make this sorter
     for c in records:
         p = Model()
 
@@ -127,7 +128,7 @@ def loop_ir_model_fields(file_name):
         else:
             pass
 
-        object_list.append(p)
+        object_list.add(p)
 
     return object_list
 
@@ -252,6 +253,8 @@ def write_data(refined_objects, result_file_name, inherit_models, name_models, e
     1. empty models
     2. inherit_models
     3. name_models
+    ****
+    The function write_rows is for inherit_models and name_models.
     """
 
     f = open(result_file_name, "a")
