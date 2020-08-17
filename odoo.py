@@ -105,28 +105,20 @@ def loop_ir_model_fields(file_name):
         p = Model()
 
         elem0 = c.find('.//field[@name="model"]')
-        if elem0 != None:
+        if elem0 is not None:
             p.data_model = (elem0.text, "model")
-        else:
-            pass
 
         elem1 = c.find('.//field[@name="name"]')
-        if elem1 != None:
+        if elem1 is not None:
             p.data_name = (elem1.text, "name")
-        else:
-            pass
 
         elem2 = c.find('.//field[@name="ttype"]')
-        if elem2 != None:
+        if elem2 is not None:
             p.data_type = (elem2.text, "ttype")
-        else:
-            pass
 
         elem3 = c.find('.//field[@name="field_description"]')
-        if elem3 != None:
+        if elem3 is not None:
             p.data_desc = (elem3.text, "field_description")
-        else:
-            pass
 
         object_list.add(p)
 
