@@ -1,5 +1,5 @@
 """
-2020-08-07 Demo software. @AratioD
+2020-08-17 Demo software. @AratioD
 """
 import time
 import os
@@ -90,14 +90,12 @@ class Field:
     data_desc = ValidString(0)
 
 
-def loop_fields(file=file_name, class=Class):
+def loop_fields(file_name, Class):
     """
     Keyword arguments:
-    class -- takes input Model or Field class.
-    imag -- takes input file name depending on Field or Model class.
+    Class -- takes an input Model() or Field() class.
+    file_name -- takes input file location.
     Parameters
-    Field() class
-    Loop all specified ir model fields.
     The fields are
     1. model
     2. name
