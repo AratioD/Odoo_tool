@@ -65,23 +65,13 @@ class ValidString:
 
 class Model:
     """
-    All instance attributes can handle only string data types.
+    A instance attribute can handle only string data type.
     Class instances are Number inside parenthesis define the lenght of the string.
     1. data_type = ValidString(1)
-    2. data_name = ValidString(1)
-    3. data_model = ValidString(1)
-    4. data_class = ValidString(1)
-    5. data_name_or_inherit = ValidString(1)
-    6. data_desc = ValidString(0)
     """
-    data_type = ValidString(1)
-    data_name = ValidString(1)
     data_model = ValidString(1)
-    data_class = ValidString(1)
-    data_name_or_inherit = ValidString(1)
-    data_desc = ValidString(0)
-    
-class field:
+
+class Field:
     """
     All instance attributes can handle only string data types.
     Class instances are Number inside parenthesis define the lenght of the string.
@@ -100,8 +90,13 @@ class field:
     data_desc = ValidString(0)
 
 
-def loop_ir_model_fields(file_name):
+def loop_fields(file=file_name, class=Class):
     """
+    Keyword arguments:
+    class -- takes input Model or Field class.
+    imag -- takes input file name depending on Field or Model class.
+    Parameters
+    Field() class
     Loop all specified ir model fields.
     The fields are
     1. model
@@ -120,7 +115,8 @@ def loop_ir_model_fields(file_name):
 
     # Checkout how to make this sorter
     for c in records:
-        p = Model()
+        
+        p = Class()
 
         elem0 = c.find('.//field[@name="model"]')
         if elem0 is not None:
@@ -396,27 +392,33 @@ def main():
     result_file_name = time_stamp_filename()
     # 2. Loops and collect needed field data from the file.
     file_name = "ir_model_fields.xml"
-    model_and_fields = loop_ir_model_fields(file_name)
+    field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
-    model_objects = loop_ir_model_fields(file_name)
-    print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
-    print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
+    model_objects = loop_fields(file_name, Model)
+    # print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
+    # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
+    for i in field_objects:
+        print(type(i))
+    
+    for i in model_objects:
+        print(type(i), "--", id(i), i.__dict__)
+        print(isinstance(i, Field))
+        # print(id(i))
+    # inherit_models, name_models, empty_models = individual_models(
+    #     model_and_fields, model_objects)
 
-    inherit_models, name_models, empty_models = individual_models(
-        model_and_fields, model_objects)
+    # # 4. Concanate and refine model data and field data
+    # refined_objects = refine_data(
+    #     model_and_fields, inherit_models, name_models, empty_models)
 
-    # 4. Concanate and refine model data and field data
-    refined_objects = refine_data(
-        model_and_fields, inherit_models, name_models, empty_models)
-
-    # 5. Writes file from the refined list of objects.
-    write_data(refined_objects, result_file_name,
-               inherit_models, name_models, empty_models)
+    # # 5. Writes file from the refined list of objects.
+    # write_data(refined_objects, result_file_name,
+    #            inherit_models, name_models, empty_models)
 
     # 6. The end of performace timer.
-    end = time.time()
-    print("Performance result--> ", end - start)
+    # end = time.time()
+    # print("Performance result--> ", end - start)
 
 
 if __name__ == "__main__":
@@ -424,7 +426,7 @@ if __name__ == "__main__":
     Two functions
     """
     # A start time for a performance comparision.
-    start = time.time()
+    # start = time.time()
     # Run unit tests.
-    odoo_test()
+    # odoo_test()
     main()
