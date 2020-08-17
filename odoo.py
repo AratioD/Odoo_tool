@@ -80,6 +80,24 @@ class Model:
     data_class = ValidString(1)
     data_name_or_inherit = ValidString(1)
     data_desc = ValidString(0)
+    
+class field:
+    """
+    All instance attributes can handle only string data types.
+    Class instances are Number inside parenthesis define the lenght of the string.
+    1. data_type = ValidString(1)
+    2. data_name = ValidString(1)
+    3. data_model = ValidString(1)
+    4. data_class = ValidString(1)
+    5. data_name_or_inherit = ValidString(1)
+    6. data_desc = ValidString(0)
+    """
+    data_type = ValidString(1)
+    data_name = ValidString(1)
+    data_model = ValidString(1)
+    data_class = ValidString(1)
+    data_name_or_inherit = ValidString(1)
+    data_desc = ValidString(0)
 
 
 def loop_ir_model_fields(file_name):
@@ -108,6 +126,8 @@ def loop_ir_model_fields(file_name):
         if elem0 is not None:
             p.data_model = (elem0.text, "model")
 
+        if elem0 is None:
+            print("none", type(None))
         elem1 = c.find('.//field[@name="name"]')
         if elem1 is not None:
             p.data_name = (elem1.text, "name")
