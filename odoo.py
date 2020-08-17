@@ -139,97 +139,97 @@ def loop_fields(file_name, Class):
     return object_list
 
 
-def individual_models(model_and_fields, model_objects):
-    """
-    The function individual_models only task is to encapsulate all unique models
-    to one trustful list, where it can looper through in further occasions.
-    The function takes in the following parameters.
-    1. model_and_fields
-    2. model_objects
-    Returns
-    1. _name --> name_models models
-    2. _inherit --> inherit models
-    3. empty models
-    """
+# def individual_models(model_and_fields, model_objects):
+#     """
+#     The function individual_models only task is to encapsulate all unique models
+#     to one trustful list, where it can looper through in further occasions.
+#     The function takes in the following parameters.
+#     1. model_and_fields
+#     2. model_objects
+#     Returns
+#     1. _name --> name_models models
+#     2. _inherit --> inherit models
+#     3. empty models
+#     """
 
-    name_models = set()
-    inherit_models = set()
-    empty_models = set()
-    all_models = set()
-    temp0_models = set()
-    temp1_models = set()
+#     name_models = set()
+#     inherit_models = set()
+#     empty_models = set()
+#     all_models = set()
+#     temp0_models = set()
+#     temp1_models = set()
 
-    for m in model_and_fields:
-        all_models.add(m.data_model[0])
-        temp0_models.add(m.data_model[0])
+#     for m in model_and_fields:
+#         all_models.add(m.data_model[0])
+#         temp0_models.add(m.data_model[0])
 
-    for m in model_objects:
-        all_models.add(m.data_model[0])
-        temp1_models.add(m.data_model[0])
+#     for m in model_objects:
+#         all_models.add(m.data_model[0])
+#         temp1_models.add(m.data_model[0])
 
-    # Create a set of _inherit models.
-    inherit_models = temp0_models - temp1_models
-    # Create a set of _name models.
-    name_models = temp0_models.intersection(temp1_models)
-    # Create a set of empty_models.
-    empty_models = all_models.difference(name_models | inherit_models)
+#     # Create a set of _inherit models.
+#     inherit_models = temp0_models - temp1_models
+#     # Create a set of _name models.
+#     name_models = temp0_models.intersection(temp1_models)
+#     # Create a set of empty_models.
+#     empty_models = all_models.difference(name_models | inherit_models)
 
-    print("LENGHT OF INHERIT MODELS", len(inherit_models))
-    print("LENGTH OF NAME MODELS-->", len(name_models))
-    print("EMPTYMODELS SIZE-->", len(empty_models))
-    print("ELEMENTS OF INHERIT MODELS-->", inherit_models)
-    print("ELEMENTS OF NAME MODELS-->", name_models)
-    print("ELEMENTS OF EMPTY MODELS-->", empty_models)
+#     print("LENGHT OF INHERIT MODELS", len(inherit_models))
+#     print("LENGTH OF NAME MODELS-->", len(name_models))
+#     print("EMPTYMODELS SIZE-->", len(empty_models))
+#     print("ELEMENTS OF INHERIT MODELS-->", inherit_models)
+#     print("ELEMENTS OF NAME MODELS-->", name_models)
+#     print("ELEMENTS OF EMPTY MODELS-->", empty_models)
 
-    return inherit_models, name_models, empty_models
+#     return inherit_models, name_models, empty_models
 
 
-def refine_data(model_and_fields, inherit_models, name_models, empty_models):
-    """
-    The function takes two parameters in and returns refined list.
-    Parameters are.
-    1. model_and_fields
-    2. inherit_models
-    3. name_models
-    4. empty_models
-    Returns: A refined_objects full Model() instances.
-    """
-    # List for refined objects
-    refined_objects = set()
+# def refine_data(model_and_fields, inherit_models, name_models, empty_models):
+#     """
+#     The function takes two parameters in and returns refined list.
+#     Parameters are.
+#     1. model_and_fields
+#     2. inherit_models
+#     3. name_models
+#     4. empty_models
+#     Returns: A refined_objects full Model() instances.
+#     """
+#     # List for refined objects
+#     refined_objects = set()
 
-    # Loop empty models
-    for elem in empty_models:
-        ro = Model()
-        ro.data_class = (elem, "class")
-        ro.data_model = (elem, "model")
-        ro.data_class = (refine_model(elem), "class")
-        ro.data_name_or_inherit = ("_inherit", "name")
-        refined_objects.add(ro)
+#     # Loop empty models
+#     for elem in empty_models:
+#         ro = Model()
+#         ro.data_class = (elem, "class")
+#         ro.data_model = (elem, "model")
+#         ro.data_class = (refine_model(elem), "class")
+#         ro.data_name_or_inherit = ("_inherit", "name")
+#         refined_objects.add(ro)
 
-    # Loop "_inherit" models
-    for elem in inherit_models:
-        for elem1 in model_and_fields:
-            if elem == elem1.data_model[0]:
-                ro = Model()
-                ro = copy.deepcopy(elem1)
-                ro.data_class = (refine_model(elem1.data_model[0]), "class")
-                ro.data_name_or_inherit = ("_inherit", "name")
-                refined_objects.add(ro)
-            else:
-                pass
-    # Loop "_name" models
-    for elem in name_models:
-        for elem1 in model_and_fields:
-            if elem == elem1.data_model[0]:
-                ro = Model()
-                ro = copy.deepcopy(elem1)
-                ro.data_class = (refine_model(elem1.data_model[0]), "class")
-                ro.data_name_or_inherit = ("_name", "name")
-                refined_objects.add(ro)
-            else:
-                pass
+#     # Loop "_inherit" models
+#     for elem in inherit_models:
+#         for elem1 in model_and_fields:
+#             if elem == elem1.data_model[0]:
+#                 ro = Model()
+#                 ro = copy.deepcopy(elem1)
+#                 ro.data_class = (refine_model(elem1.data_model[0]), "class")
+#                 ro.data_name_or_inherit = ("_inherit", "name")
+#                 refined_objects.add(ro)
+#             else:
+#                 pass
+#     # Loop "_name" models
+#     for elem in name_models:
+#         for elem1 in model_and_fields:
+#             if elem == elem1.data_model[0]:
+#                 ro = Model()
+#                 ro = copy.deepcopy(elem1)
+#                 ro.data_class = (refine_model(elem1.data_model[0]), "class")
+#                 ro.data_name_or_inherit = ("_name", "name")
+#                 refined_objects.add(ro)
+#             else:
+#                 pass
 
-    return refined_objects
+#     return refined_objects
 
 
 def refine_model(elem):
@@ -251,77 +251,77 @@ def refine_model(elem):
     return class_name
 
 
-def write_data(refined_objects, result_file_name, inherit_models, name_models, empty_models):
-    """
-    Writes refined objects to time stamped file name
-    Returns: Time-stamped Python file.
-    Write loop is:
-    1. empty models
-    2. inherit_models
-    3. name_models
-    ****
-    The function write_rows is for inherit_models and name_models.
-    """
+# def write_data(field_objects, model_objects):
+#     """
+#     Writes refined objects to time stamped file name
+#     Returns: Time-stamped Python file.
+#     Write loop is:
+#     1. empty models
+#     2. inherit_models
+#     3. name_models
+#     ****
+#     The function write_rows is for inherit_models and name_models.
+#     """
 
-    f = open(result_file_name, "a")
+#     f = open(result_file_name, "a")
 
-    # Imports to py file.
-    row0 = (f'from odoo import models, fields')
+#     # Imports to py file.
+#     row0 = (f'from odoo import models, fields')
 
-    f.write(row0)
-    f.write('\n')
-    f.write('\n')
+#     f.write(row0)
+#     f.write('\n')
+#     f.write('\n')
 
-    for elem in empty_models:
-        for elem1 in refined_objects:
-            if elem == elem1.data_model[0]:
-                row1 = (f'class {elem1.data_class[0]}(models.Model):')
-                f.write('\n')
-                f.write(row1)
-                f.write('\n')
-                row2 = (
-                    f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
-                f.write(row2)
-                f.write('\n')
+#     for elem in empty_models:
+#         for elem1 in refined_objects:
+#             if elem == elem1.data_model[0]:
+#                 row1 = (f'class {elem1.data_class[0]}(models.Model):')
+#                 f.write('\n')
+#                 f.write(row1)
+#                 f.write('\n')
+#                 row2 = (
+#                     f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+#                 f.write(row2)
+#                 f.write('\n')
 
-    for elem in inherit_models:
-        check = False
-        for elem1 in refined_objects:
-            if elem == elem1.data_model[0] and check == False:
-                write_rows(elem1, check, f)
-                check = True
-            elif elem == elem1.data_model[0] and check == True:
-                write_rows(elem1, check, f)
+#     for elem in inherit_models:
+#         check = False
+#         for elem1 in refined_objects:
+#             if elem == elem1.data_model[0] and check == False:
+#                 write_rows(elem1, check, f)
+#                 check = True
+#             elif elem == elem1.data_model[0] and check == True:
+#                 write_rows(elem1, check, f)
 
-    for elem in name_models:
-        check = False
-        for elem1 in refined_objects:
-            if elem == elem1.data_model[0] and check == False:
-                write_rows(elem1, check, f)
-                check = True
-            elif elem == elem1.data_model[0] and check == True:
-                write_rows(elem1, check, f)
+#     for elem in name_models:
+#         check = False
+#         for elem1 in refined_objects:
+#             if elem == elem1.data_model[0] and check == False:
+#                 write_rows(elem1, check, f)
+#                 check = True
+#             elif elem == elem1.data_model[0] and check == True:
+#                 write_rows(elem1, check, f)
 
 
-def write_rows(elem1, check, f):
-    if check == False:
-        row1 = (f'class {elem1.data_class[0]}(models.Model):')
-        f.write('\n')
-        f.write(row1)
-        f.write('\n')
-        row2 = (
-            f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
-        f.write(row2)
-        f.write('\n')
-        row3 = (
-            f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-        f.write(row3)
-        f.write('\n')
-    elif check == True:
-        row3 = (
-            f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-        f.write(row3)
-        f.write('\n')
+# def write_rows(elem1, check, f):
+#     if check == False:
+#         row1 = (f'class {elem1.data_class[0]}(models.Model):')
+#         f.write('\n')
+#         f.write(row1)
+#         f.write('\n')
+#         row2 = (
+#             f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+#         f.write(row2)
+#         f.write('\n')
+#         row3 = (
+#             f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+#         f.write(row3)
+#         f.write('\n')
+#     elif check == True:
+#         row3 = (
+#             f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
+#         f.write(row3)
+#         f.write('\n')
 
 
 def time_stamp_filename():
@@ -337,41 +337,41 @@ def time_stamp_filename():
     return file_name
 
 
-def odoo_test():
-    """
-    The test class, which includes n tests to assure everything works fine.
-    Total tests amount is 5.
-    """
-    t0 = Model()
-    t1 = Model()
-    t2 = Model()
-    t3 = Model()
-    t4 = Model()
-    t5 = Model()
-    t6 = Model()
+# def odoo_test():
+#     """
+#     The test class, which includes n tests to assure everything works fine.
+#     Total tests amount is 5.
+#     """
+#     t0 = Model()
+#     t1 = Model()
+#     t2 = Model()
+#     t3 = Model()
+#     t4 = Model()
+#     t5 = Model()
+#     t6 = Model()
 
-    t0.data_name = ("Test", "name")
-    t1.data_name = ("Test", "name")
-    t2.data_name = ("Python_4ever", "name")
-    t3.data_model = ("cat", "model")
-    t4.data_name = ("cat", "name")
-    t5.data_type = ("python_33", "ttype")
-    t6.data_type = ("python_33", "ttype")
+#     t0.data_name = ("Test", "name")
+#     t1.data_name = ("Test", "name")
+#     t2.data_name = ("Python_4ever", "name")
+#     t3.data_model = ("cat", "model")
+#     t4.data_name = ("cat", "name")
+#     t5.data_type = ("python_33", "ttype")
+#     t6.data_type = ("python_33", "ttype")
 
-    # Test number 1, class instance t0 is equal to t1
-    assert t0.data_name == t1.data_name
+#     # Test number 1, class instance t0 is equal to t1
+#     assert t0.data_name == t1.data_name
 
-    # Test number 2, class instance t1 is NOT equal to t2
-    assert t1.data_name != t2.data_name
+#     # Test number 2, class instance t1 is NOT equal to t2
+#     assert t1.data_name != t2.data_name
 
-    # Test number 3, class instance t3 is NOT equal to t4 for datatype.
-    assert t3.data_model != t4.data_name
+#     # Test number 3, class instance t3 is NOT equal to t4 for datatype.
+#     assert t3.data_model != t4.data_name
 
-    # Test number 4, class instance t5 is equal to t6 for datatype.
-    assert t5.data_model == t6.data_name
+#     # Test number 4, class instance t5 is equal to t6 for datatype.
+#     assert t5.data_model == t6.data_name
 
-    # Test number 5, class instance t6 is NOT equal to t0 for datatype.
-    assert t6.data_model != t0.data_name
+#     # Test number 5, class instance t6 is NOT equal to t0 for datatype.
+#     assert t6.data_model != t0.data_name
 
 
 def main():
@@ -411,7 +411,7 @@ def main():
     #     model_and_fields, inherit_models, name_models, empty_models)
 
     # # 5. Writes file from the refined list of objects.
-    # write_data(refined_objects, result_file_name,
+    # write_data(field_objects, model_objects)
     #            inherit_models, name_models, empty_models)
 
     # 6. The end of performace timer.
