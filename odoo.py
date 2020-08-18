@@ -71,6 +71,7 @@ class Model:
     """
     data_model = ValidString(1)
 
+
 class Field:
     """
     All instance attributes can handle only string data types.
@@ -103,7 +104,8 @@ def loop_fields(file_name, Class):
     4. field description
     Returns: A object_list full Model() instances.
     """
-    object_list = set()
+    # object_list = set()
+    object_dict = defaultdict(set)
     # Specified file name.
 
     full_file = os.path.abspath(os.path.join(file_name))
@@ -113,30 +115,31 @@ def loop_fields(file_name, Class):
 
     # Checkout how to make this sorter
     for c in records:
-        
+
         p = Class()
 
         elem0 = c.find('.//field[@name="model"]')
         if elem0 is not None:
             p.data_model = (elem0.text, "model")
+            object_dict[p.data_model] = "kissa"
 
-        if elem0 is None:
-            print("none", type(None))
-        elem1 = c.find('.//field[@name="name"]')
-        if elem1 is not None:
-            p.data_name = (elem1.text, "name")
+        if Class is Field:
+            elem1 = c.find('.//field[@name="name"]')
+            if elem1 is not None:
+                p.data_type = (elem1.text, "name")
+                object_dict[p.data_model].add(p.data_name)
 
-        elem2 = c.find('.//field[@name="ttype"]')
-        if elem2 is not None:
-            p.data_type = (elem2.text, "ttype")
+            elem2 = c.find('.//field[@name="ttype"]')
+            if elem2 is not None:
+                p.data_type = (elem2.text, "ttype")
+                object_dict[p.data_model].add(p.data_type)
 
-        elem3 = c.find('.//field[@name="field_description"]')
-        if elem3 is not None:
-            p.data_desc = (elem3.text, "field_description")
+            elem3 = c.find('.//field[@name="field_description"]')
+            if elem3 is not None:
+                p.data_desc = (elem3.text, "field_description")
+                object_dict[p.data_model].add(p.data_desc)
 
-        object_list.add(p)
-
-    return object_list
+    return object_dict
 
 
 # def individual_models(model_and_fields, model_objects):
@@ -251,26 +254,26 @@ def refine_model(elem):
     return class_name
 
 
-# def write_data(field_objects, model_objects):
-#     """
-#     Writes refined objects to time stamped file name
-#     Returns: Time-stamped Python file.
-#     Write loop is:
-#     1. empty models
-#     2. inherit_models
-#     3. name_models
-#     ****
-#     The function write_rows is for inherit_models and name_models.
-#     """
+def write_data(field_objects, model_objects, result_file_name):
+    """
+    Writes refined objects to time stamped file name
+    Returns: Time-stamped Python file.
+    Write loop is:
+    1. empty models
+    2. inherit_models
+    3. name_models
+    ****
+    The function write_rows is for inherit_models and name_models.
+    """
 
-#     f = open(result_file_name, "a")
+    f = open(result_file_name, "a")
 
-#     # Imports to py file.
-#     row0 = (f'from odoo import models, fields')
+    # Imports to py file.
+    row0 = (f'from odoo import models, fields')
 
-#     f.write(row0)
-#     f.write('\n')
-#     f.write('\n')
+    f.write(row0)
+    f.write('\n')
+    f.write('\n')
 
 #     for elem in empty_models:
 #         for elem1 in refined_objects:
@@ -396,12 +399,15 @@ def main():
     model_objects = loop_fields(file_name, Model)
     # print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
     # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
-    for i in field_objects:
-        print(type(i))
+    # for k, v in model_objects.keys():
+    #     print(k)
     
-    for i in model_objects:
-        print(type(i), "--", id(i), i.__dict__)
-        print(isinstance(i, Field))
+    for k in field_objects.keys():
+        print(k)
+
+    # for i in model_objects:
+    #     print(type(i), "--", id(i), i.__dict__)
+    #     print(isinstance(i, Field))
         # print(id(i))
     # inherit_models, name_models, empty_models = individual_models(
     #     model_and_fields, model_objects)
