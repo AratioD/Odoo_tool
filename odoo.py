@@ -127,17 +127,17 @@ def loop_fields(file_name, Class):
             elem1 = c.find('.//field[@name="name"]')
             if elem1 is not None:
                 p.data_type = (elem1.text, "name")
-                object_dict[p.data_model].add(p.data_name)
+                object_dict[p.data_model] = (p.data_name)
 
             elem2 = c.find('.//field[@name="ttype"]')
             if elem2 is not None:
                 p.data_type = (elem2.text, "ttype")
-                object_dict[p.data_model].add(p.data_type)
+                object_dict[p.data_model] = (p.data_type)
 
             elem3 = c.find('.//field[@name="field_description"]')
             if elem3 is not None:
                 p.data_desc = (elem3.text, "field_description")
-                object_dict[p.data_model].add(p.data_desc)
+                object_dict[p.data_model] = (p.data_desc)
 
     return object_dict
 
@@ -274,6 +274,12 @@ def write_data(field_objects, model_objects, result_file_name):
     f.write(row0)
     f.write('\n')
     f.write('\n')
+    
+    for k in field_objects.keys():
+        if k in model_objects.keys():
+            print(k)
+        else:
+            print("no", k)
 
 #     for elem in empty_models:
 #         for elem1 in refined_objects:
@@ -376,6 +382,9 @@ def time_stamp_filename():
 #     # Test number 5, class instance t6 is NOT equal to t0 for datatype.
 #     assert t6.data_model != t0.data_name
 
+ 
+def method3(list,search_age):
+     return list.keys()[list.values().index(search_age)]
 
 def main():
     """
@@ -401,10 +410,17 @@ def main():
     # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
     # for k, v in model_objects.keys():
     #     print(k)
-    
-    for k in field_objects.keys():
-        print(k)
 
+    # for k in field_objects.keys():
+    #     print(k)
+        
+    
+
+   
+        
+
+
+    
     # for i in model_objects:
     #     print(type(i), "--", id(i), i.__dict__)
     #     print(isinstance(i, Field))
@@ -417,12 +433,12 @@ def main():
     #     model_and_fields, inherit_models, name_models, empty_models)
 
     # # 5. Writes file from the refined list of objects.
-    # write_data(field_objects, model_objects)
+    write_data(field_objects, model_objects, result_file_name)
     #            inherit_models, name_models, empty_models)
 
     # 6. The end of performace timer.
-    # end = time.time()
-    # print("Performance result--> ", end - start)
+    end = time.time()
+    print("Performance result--> ", end - start)
 
 
 if __name__ == "__main__":
@@ -430,7 +446,7 @@ if __name__ == "__main__":
     Two functions
     """
     # A start time for a performance comparision.
-    # start = time.time()
+    start = time.time()
     # Run unit tests.
     # odoo_test()
     main()
