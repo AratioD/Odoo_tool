@@ -278,24 +278,30 @@ def write_data(field_objects, model_objects, result_file_name):
     print(len(field_objects.keys()))
     print(len(model_objects.keys()))
 
-    test = set()
-    test1 = set()
-    test2 = {}
-    test, types = zip(*field_objects)
-    test1, types = zip(*model_objects)
-    # test.add(keys)
-    test2 = test + test1
-    
-    print("type", type(test2))
-    for hhh in test2:
-        print("tup", hhh)
+    all_models = set()
+    # field_models, types = zip(*field_objects)
+    # model_models, types = zip(*model_objects)
+    # # Unite all models
+    # all_models = field_models + model_models
 
-    dfdf = set(test2)
-    
-    print("type", type(dfdf))
-    for iii in dfdf:
-        print("set", iii)
-        
+    # # Transform all_models form to set. No duplicates.
+    # all_models = set(all_models)
+
+    # Collect all models to one list
+    for k in field_objects.keys():
+        all_models.add(k)
+
+    for k in model_objects.keys():
+        all_models.add(k)
+
+    for models in all_models:
+        if models not in field_objects.keys() and models in model_objects.keys():
+            print("model no field yes model->", models[0])
+        elif models in field_objects.keys() and models not in model_objects.keys():
+            print("model yes field not model->", models[0])
+        elif models in field_objects.keys() and models in model_objects.keys():
+            print("yes field and yes model->", models[0])
+
     # for ii in test:
     #     if ii is not test1:
     #         test.add(ii)
