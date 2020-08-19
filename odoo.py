@@ -275,6 +275,9 @@ def write_data(field_objects, model_objects, result_file_name):
     f.write('\n')
     f.write('\n')
     
+    print(len(field_objects.keys()))
+    print(len(model_objects.keys()))
+    
     for k in field_objects.keys():
         if k in model_objects.keys():
             print(k)
