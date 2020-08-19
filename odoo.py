@@ -278,22 +278,50 @@ def write_data(field_objects, model_objects, result_file_name):
     print(len(field_objects.keys()))
     print(len(model_objects.keys()))
 
-
     test = set()
-    keys0, types = zip(*field_objects)
-    keys1, types = zip(*model_objects)
+    test1 = set()
+    test2 = {}
+    test, types = zip(*field_objects)
+    test1, types = zip(*model_objects)
     # test.add(keys)
+    test2 = test + test1
     
-    dddd = zip(*keys0)
-    test.add(keys0)
-    test.add(keys1)
+    print("type", type(test2))
+    for hhh in test2:
+        print("tup", hhh)
 
-    # for ii in dddd:
-    #     print("dd-->", ii)
+    dfdf = set(test2)
+    
+    print("type", type(dfdf))
+    for iii in dfdf:
+        print("set", iii)
         
-    for ii in test:
-        print("-->", ii)
+    # for ii in test:
+    #     if ii is not test1:
+    #         test.add(ii)
+    #         print(ii)
 
+    # for ii in test:
+    #     print("ref", ii)
+
+    # # dddd = zip(*keys0)
+    # # test.add(keys0)
+    # # test.add(keys1)
+
+    # # for ii in dddd:
+    # #     print("dd-->", ii)
+
+    # for ii in test:
+    #     print("-->", ii)
+
+    # for ii in test1:
+    #     print("-->", ii)
+
+    # for ii in test2:
+    #     if ii in test:
+    #         print("yes test", ii)
+    #     elif ii in test1:
+    #         print("yes test1", ii)
 
     # for k in model_objects.keys():
     #     if k in field_objects.keys():
