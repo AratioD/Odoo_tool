@@ -274,15 +274,32 @@ def write_data(field_objects, model_objects, result_file_name):
     f.write(row0)
     f.write('\n')
     f.write('\n')
-    
+
     print(len(field_objects.keys()))
     print(len(model_objects.keys()))
+
+
+    test = set()
+    keys0, types = zip(*field_objects)
+    keys1, types = zip(*model_objects)
+    # test.add(keys)
     
-    for k in field_objects.keys():
-        if k in model_objects.keys():
-            print(k)
-        else:
-            print("no", k)
+    dddd = zip(*keys0)
+    test.add(keys0)
+    test.add(keys1)
+
+    # for ii in dddd:
+    #     print("dd-->", ii)
+        
+    for ii in test:
+        print("-->", ii)
+
+
+    # for k in model_objects.keys():
+    #     if k in field_objects.keys():
+    #         print(k)
+    #     else:
+    #         print("no", k)
 
 #     for elem in empty_models:
 #         for elem1 in refined_objects:
@@ -385,9 +402,10 @@ def time_stamp_filename():
 #     # Test number 5, class instance t6 is NOT equal to t0 for datatype.
 #     assert t6.data_model != t0.data_name
 
- 
-def method3(list,search_age):
-     return list.keys()[list.values().index(search_age)]
+
+def method3(list, search_age):
+    return list.keys()[list.values().index(search_age)]
+
 
 def main():
     """
@@ -416,18 +434,11 @@ def main():
 
     # for k in field_objects.keys():
     #     print(k)
-        
-    
 
-   
-        
-
-
-    
     # for i in model_objects:
     #     print(type(i), "--", id(i), i.__dict__)
     #     print(isinstance(i, Field))
-        # print(id(i))
+    # print(id(i))
     # inherit_models, name_models, empty_models = individual_models(
     #     model_and_fields, model_objects)
 
