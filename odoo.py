@@ -102,9 +102,9 @@ def loop_fields(file_name, Class):
     2. name
     3. ttype
     4. field description
-    Returns: A object_list full Model() instances.
+    Returns: A object_set full Model() instances.
     """
-    # object_list = set()
+    object_set = set()
     object_dict = defaultdict(set)
     # Specified file name.
 
@@ -117,29 +117,37 @@ def loop_fields(file_name, Class):
     for c in records:
 
         p = Class()
-        print(type(p), id(p), hex(id(p)))
+        # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
-        if elem0 is not None and elem0 is not object_dict.keys():
+        # if elem0 is not None:
+        if elem0 is not None and elem0.text is not object_dict.keys():
             p.data_model = (elem0.text, "model")
-            object_dict[p.data_model] = "kissa"
-        elif Class is Field:
+            # Insert first key in the dict
+            # object_set.clear()
+            object_dict[elem0.text]
+
+        # Loop only if the class is Field()
+        if Class is Field:
             elem1 = c.find('.//field[@name="name"]')
             if elem1 is not None:
-                p.data_model = (elem0.text, "model")
-                p.data_type = (elem1.text, "name")
-                object_dict[p.data_model] = (p.data_name)
+                p.data_name = (elem1.text, "name")
+                object_set.add(p.data_type)
+                object_dict[elem0.text] = object_set
+
             elem2 = c.find('.//field[@name="ttype"]')
             if elem2 is not None:
-                p.data_model = (elem0.text, "model")
                 p.data_type = (elem2.text, "ttype")
-                object_dict[p.data_model] = (p.data_type)
+                object_set.add(p.data_type)
+                object_dict[elem0.text] = object_set
+
             elem3 = c.find('.//field[@name="field_description"]')
             if elem3 is not None:
-                p.data_model = (elem0.text, "model")
                 p.data_desc = (elem3.text, "field_description")
-                object_dict[p.data_model] = (p.data_desc)
+                object_set.add(p.data_desc)
+                object_dict[elem0.text] = object_set
 
     return object_dict
+
 
 def refine_model(elem):
     """
@@ -334,8 +342,10 @@ def main():
     #     print(k)
 
     for k, v in field_objects.items():
-        for kk in v:
-            print(kk)
+        print("key-->", k, "value-->", v)
+
+    for k, v in model_objects.items():
+        print("key-->", k, "value-->", v)
 
     # for i in model_objects:
     #     print(type(i), "--", id(i), i.__dict__)
