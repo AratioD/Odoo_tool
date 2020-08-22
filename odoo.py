@@ -122,16 +122,16 @@ def loop_fields(file_name, Class):
         # if elem0 is not None:
 
 
-        if elem0 is not None and elem0.text in object_dict.keys():
-
+        if elem0 is not None and elem0.text not in object_dict.keys():
             # p.data_model = (elem0.text, "model")
             # Insert first key in the dict
-            # object_set.clear()
+            
             object_dict[elem0.text]
 
             # Loop only if the class is Field()
             if Class is Field:
                 object_set = set()
+                
                 elem1 = c.find('.//field[@name="name"]')
                 if elem1 is not None:
                     p.data_name = (elem1.text, "name")
@@ -147,12 +147,14 @@ def loop_fields(file_name, Class):
                     p.data_desc = (elem3.text, "field_description")
                     object_set.add(p.data_desc)
 
-            object_dict[elem0.text] = object_set
+                object_dict[elem0.text] = object_set
             
         elif elem0 is not None:
             new_set = set()
             
-            new_set = object_dict[elem0.text]
+            new_set.update(object_dict[elem0.text])
+            
+            print(len(new_set))
             
             # Loop only if the class is Field()
             if Class is Field:
@@ -369,10 +371,9 @@ def main():
     # for k, v in model_objects.keys():
     #     print(k)
 
-    for k, v in field_objects.items():
-        # print("key-->", k, "value-->", v)
-        for vv in v:
-            print(v)
+    # for k, v in field_objects.items():
+    #     print("key-->", k, "value-->", v)
+     
 
     # for k, v in model_objects.items():
     #     print("key-->", k, "value-->", v)
@@ -389,8 +390,7 @@ def main():
     #     model_and_fields, inherit_models, name_models, empty_models)
 
     # # 5. Writes file from the refined list of objects.
-    # write_data(field_objects, model_objects, result_file_name)
-    #            inherit_models, name_models, empty_models)
+    write_data(field_objects, model_objects, result_file_name)
 
     # 6. The end of performace timer.
     end = time.time()
