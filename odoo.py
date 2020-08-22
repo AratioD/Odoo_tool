@@ -104,7 +104,7 @@ def loop_fields(file_name, Class):
     4. field description
     Returns: A object_set full Model() instances.
     """
-    object_set = set()
+    
     object_dict = defaultdict(set)
     # Specified file name.
 
@@ -120,31 +120,59 @@ def loop_fields(file_name, Class):
         # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
         # if elem0 is not None:
-        if elem0 is not None and elem0.text is not object_dict.keys():
-            p.data_model = (elem0.text, "model")
+
+
+        if elem0 is not None and elem0.text in object_dict.keys():
+
+            # p.data_model = (elem0.text, "model")
             # Insert first key in the dict
             # object_set.clear()
             object_dict[elem0.text]
 
-        # Loop only if the class is Field()
-        if Class is Field:
-            elem1 = c.find('.//field[@name="name"]')
-            if elem1 is not None:
-                p.data_name = (elem1.text, "name")
-                object_set.add(p.data_type)
-                object_dict[elem0.text] = object_set
+            # Loop only if the class is Field()
+            if Class is Field:
+                object_set = set()
+                elem1 = c.find('.//field[@name="name"]')
+                if elem1 is not None:
+                    p.data_name = (elem1.text, "name")
+                    object_set.add(p.data_type)
+                    
+                elem2 = c.find('.//field[@name="ttype"]')
+                if elem2 is not None:
+                    p.data_type = (elem2.text, "ttype")
+                    object_set.add(p.data_type)
 
-            elem2 = c.find('.//field[@name="ttype"]')
-            if elem2 is not None:
-                p.data_type = (elem2.text, "ttype")
-                object_set.add(p.data_type)
-                object_dict[elem0.text] = object_set
+                elem3 = c.find('.//field[@name="field_description"]')
+                if elem3 is not None:
+                    p.data_desc = (elem3.text, "field_description")
+                    object_set.add(p.data_desc)
 
-            elem3 = c.find('.//field[@name="field_description"]')
-            if elem3 is not None:
-                p.data_desc = (elem3.text, "field_description")
-                object_set.add(p.data_desc)
-                object_dict[elem0.text] = object_set
+            object_dict[elem0.text] = object_set
+            
+        elif elem0 is not None:
+            new_set = set()
+            
+            new_set = object_dict[elem0.text]
+            
+            # Loop only if the class is Field()
+            if Class is Field:
+                elem1 = c.find('.//field[@name="name"]')
+                if elem1 is not None:
+                    p.data_name = (elem1.text, "name")
+                    new_set.add(p.data_type)
+
+                elem2 = c.find('.//field[@name="ttype"]')
+                if elem2 is not None:
+                    p.data_type = (elem2.text, "ttype")
+                    new_set.add(p.data_type)
+
+                elem3 = c.find('.//field[@name="field_description"]')
+                if elem3 is not None:
+                    p.data_desc = (elem3.text, "field_description")
+                    new_set.add(p.data_desc)
+            
+            object_dict[elem0.text] = new_set
+            
 
     return object_dict
 
@@ -342,10 +370,12 @@ def main():
     #     print(k)
 
     for k, v in field_objects.items():
-        print("key-->", k, "value-->", v)
+        # print("key-->", k, "value-->", v)
+        for vv in v:
+            print(v)
 
-    for k, v in model_objects.items():
-        print("key-->", k, "value-->", v)
+    # for k, v in model_objects.items():
+    #     print("key-->", k, "value-->", v)
 
     # for i in model_objects:
     #     print(type(i), "--", id(i), i.__dict__)
