@@ -104,6 +104,8 @@ def loop_fields(file_name, Class):
     4. field description
     Returns: A object_set full Model() instances.
     """
+    # Empty object set
+    object_set = set()
 
     object_dict = defaultdict(set)
     # Specified file name.
@@ -129,30 +131,26 @@ def loop_fields(file_name, Class):
 
             # Loop only if the class is Field()
             if Class is Field:
-                object_set = set()
 
                 elem1 = c.find('.//field[@name="name"]')
                 if elem1 is not None:
                     p.data_name = (elem1.text, "name")
-                    object_set.add(p.data_type)
+                    # object_set.add(p.name)
 
                 elem2 = c.find('.//field[@name="ttype"]')
                 if elem2 is not None:
                     p.data_type = (elem2.text, "ttype")
-                    object_set.add(p.data_type)
+                    # object_set.add(p.data_type)
 
                 elem3 = c.find('.//field[@name="field_description"]')
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
-                    object_set.add(p.data_desc)
-
-                object_dict[elem0.text] = object_set
+                    # object_set.add(p.data_desc)
 
         elif elem0 is not None:
-            new_set = set()
+            # new_set = set()
 
-            new_set.update(object_dict[elem0.text])
-
+            # new_set.update(object_dict[elem0.text])
             # print(len(new_set))
 
             # Loop only if the class is Field()
@@ -160,19 +158,22 @@ def loop_fields(file_name, Class):
                 elem1 = c.find('.//field[@name="name"]')
                 if elem1 is not None:
                     p.data_name = (elem1.text, "name")
-                    new_set.add(p.data_type)
+                    # new_set.add(p.data_type)
 
                 elem2 = c.find('.//field[@name="ttype"]')
                 if elem2 is not None:
                     p.data_type = (elem2.text, "ttype")
-                    new_set.add(p.data_type)
+                    # new_set.add(p.data_type)
 
                 elem3 = c.find('.//field[@name="field_description"]')
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
-                    new_set.add(p.data_desc)
+                    # new_set.add(p.data_desc)
 
-            object_dict[elem0.text] = new_set
+        # Add a created instance into object set list
+        object_set.add(p)
+        # Assign a set to created key.
+        object_dict[elem0.text] = object_set
 
     return object_dict
 
@@ -213,8 +214,6 @@ def write_data(field_objects, model_objects, result_file_name):
     # Imports to py file.
     row0 = (f'from odoo import models, fields')
 
-    is_class_name_written = set()
-
     f.write(row0)
     f.write('\n')
     f.write('\n')
@@ -231,32 +230,41 @@ def write_data(field_objects, model_objects, result_file_name):
 
     for models in all_models:
         if models not in field_objects.keys() and models in model_objects.keys():
-            print("model no field yes model->", models)
-            # write_rows(models, f, is_class_name_written)
+            pass
+            # print("model no field yes model->", models)
+            # # write_rows(models, f, is_class_name_written)
+            # inherit = "_inherit"
+            # write_rows(models, f, inherit, field_objects)
         elif models in field_objects.keys() and models not in model_objects.keys():
-            print("model yes field not model->", models)
-            # write_rows(models, f, is_class_name_written)
+            pass
+            # print("model yes field not model->", models)
+            # # write_rows(models, f, is_class_name_written)
+            # inherit = "_inherit"
+            # write_rows(models, f, inherit, field_objects)
         elif models in field_objects.keys() and models in model_objects.keys():
             print("yes field and yes model->", models)
-            inherit = "_inherit"
-            write_rows(models, f, is_class_name_written, inherit)
+            inherit = "_name"
+            write_rows(models, f, inherit, field_objects)
 
 
-def write_rows(models, f, is_class_name_written):
+def write_rows(models, f, inherit, objects):
     class_name = refine_model(models)
     class_name = refine_model(models)
     row1 = (f'class {class_name}(models.Model):')
-    is_class_name_written.add(class_name)
     f.write('\n')
     f.write(row1)
     f.write('\n')
-    row2 = (f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
+    row2 = (f'      {inherit} = \'{models}\'')
     f.write(row2)
     f.write('\n')
-    row3 = (f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-    f.write(row3)
-    f.write('\n')
- 
+
+    values = objects[models]
+
+    for ii in values:
+        row3 = (f'      {ii.data_name[0]} = fields.{ii.data_type}(string="{ii.data_desc[0]}")')
+        f.write(row3)
+        f.write('\n')
+
 # def write_rows(dictionary, f):
 #     print(type(dictionary))
 #     for ii in dictionary:
@@ -356,9 +364,22 @@ def main():
     # for k, v in model_objects.keys():
     #     print(k)
 
-    # for k, v in field_objects.items():
-    #     print("key-->", k, "value-->", v)
+    #     1. model
+    # 2. name
+    # 3. ttype
+    # 4. field description
 
+    # for k, v in field_objects.items():
+    #     # print("key-->", k, "value-->", v)
+    #     for vv in v:
+    #         print("key -->", k, "data_name-->", vv.data_name,
+    #               "data_type-->", vv.data_type, "field_desc-->", vv.data_desc)
+
+    # for k, v in model_objects.items():
+    #     # print("key-->", k, "value-->", v)
+    #     for vv in v:
+    #         print("key -->", k, "data_name-->", vv.data_name,
+    #               "data_type-->", vv.data_type, "field_desc-->", vv.data_desc)
     # for k, v in model_objects.items():
     #     print("key-->", k, "value-->", v)
 
