@@ -122,9 +122,13 @@ def loop_fields(file_name, Class):
         # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
         # if elem0 is not None:
+        if len(object_dict.keys()) == 2:
+            print("now it is the time!!")
+            pass
 
         if elem0 is not None and elem0.text not in object_dict.keys():
-            # p.data_model = (elem0.text, "model")
+            # Clear the
+            object_set.clear()
             # Insert first key in the dict
 
             object_dict[elem0.text]
@@ -148,10 +152,6 @@ def loop_fields(file_name, Class):
                     # object_set.add(p.data_desc)
 
         elif elem0 is not None:
-            # new_set = set()
-
-            # new_set.update(object_dict[elem0.text])
-            # print(len(new_set))
 
             # Loop only if the class is Field()
             if Class is Field:
@@ -239,12 +239,13 @@ def write_data(field_objects, model_objects, result_file_name):
             pass
             # print("model yes field not model->", models)
             # # write_rows(models, f, is_class_name_written)
-            # inherit = "_inherit"
-            # write_rows(models, f, inherit, field_objects)
-        elif models in field_objects.keys() and models in model_objects.keys():
-            print("yes field and yes model->", models)
-            inherit = "_name"
+            inherit = "_inherit"
             write_rows(models, f, inherit, field_objects)
+        elif models in field_objects.keys() and models in model_objects.keys():
+            pass
+            # print("yes field and yes model->", models)
+            # inherit = "_name"
+            # write_rows(models, f, inherit, field_objects)
 
 
 def write_rows(models, f, inherit, objects):
@@ -261,7 +262,8 @@ def write_rows(models, f, inherit, objects):
     values = objects[models]
 
     for ii in values:
-        row3 = (f'      {ii.data_name[0]} = fields.{ii.data_type}(string="{ii.data_desc[0]}")')
+        row3 = (
+            f'      {ii.data_name[0]} = fields.{ii.data_type[0]}(string="{ii.data_desc[0]}")')
         f.write(row3)
         f.write('\n')
 
