@@ -123,8 +123,6 @@ def loop_fields(file_name, Class):
         # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
         # if elem0 is not None:
-        if elem0 is not None and elem0.text == "project.tags":
-            print("jee")
 
         if elem0 is not None and elem0.text not in object_dict.keys():
             # Clear the
@@ -152,20 +150,22 @@ def loop_fields(file_name, Class):
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
                     # object_set.add(p.data_desc)
-            
+
             # Add a created instance into object set list
             # new_set = {}
             object_set.add(p)
             # new_set = object_set
-            print("set lenght", len(object_set))
-            print("key values lenght", len(object_dict[elem0.text]))
+            print("set lenght 1st time-->", len(object_set))
+            print("key values lenght 1st time-->",
+                  len(object_dict[elem0.text]))
             # Assign a set to created key.
             object_dict[elem0.text] = object_set
 
         elif elem0 is not None and elem0.text in object_dict.keys():
 
-            # object_set.clear()
-            # object_set = object_dict[elem0.text]
+            object_set1 = set()
+            print("memory address-->", id(object_set1))
+            object_set1 = object_dict[elem0.text].copy()
 
             # Loop only if the class is Field()
             if Class is Field:
@@ -186,12 +186,13 @@ def loop_fields(file_name, Class):
 
             # Add a created instance into object set list
             # new_set = {}
-            object_set.add(p)
+            object_set1.add(p)
             # new_set = object_set
-            print("set lenght", len(object_set))
-            print("key values lenght", len(object_dict[elem0.text]))
+            print("set lenght 2nd time-->", len(object_set))
+            print("key values lenght 2nd time-->",
+                  len(object_dict[elem0.text]))
             # Assign a set to created key.
-            object_dict[elem0.text] = object_set
+            object_dict[elem0.text] = object_set1
 
     return object_dict
 
