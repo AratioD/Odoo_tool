@@ -104,8 +104,9 @@ def loop_fields(file_name, Class):
     4. field description
     Returns: A object_set full Model() instances.
     """
-    # Empty object set
-    object_set = set()
+    # # Empty object set
+    # object_set = set()
+    # object_set1 = set()
 
     object_dict = defaultdict(set)
     # Specified file name.
@@ -122,15 +123,16 @@ def loop_fields(file_name, Class):
         # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
         # if elem0 is not None:
-        if len(object_dict.keys()) == 2:
-            print("now it is the time!!")
-            pass
+        if elem0 is not None and elem0.text == "project.tags":
+            print("jee")
 
         if elem0 is not None and elem0.text not in object_dict.keys():
             # Clear the
-            object_set.clear()
-            # Insert first key in the dict
-
+            # Empty object set
+            object_set = set()
+            print("memory address-->", id(object_set))
+            if len(object_set) > 0:
+                pass
             object_dict[elem0.text]
 
             # Loop only if the class is Field()
@@ -150,8 +152,20 @@ def loop_fields(file_name, Class):
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
                     # object_set.add(p.data_desc)
+            
+            # Add a created instance into object set list
+            # new_set = {}
+            object_set.add(p)
+            # new_set = object_set
+            print("set lenght", len(object_set))
+            print("key values lenght", len(object_dict[elem0.text]))
+            # Assign a set to created key.
+            object_dict[elem0.text] = object_set
 
-        elif elem0 is not None:
+        elif elem0 is not None and elem0.text in object_dict.keys():
+
+            # object_set.clear()
+            # object_set = object_dict[elem0.text]
 
             # Loop only if the class is Field()
             if Class is Field:
@@ -170,10 +184,14 @@ def loop_fields(file_name, Class):
                     p.data_desc = (elem3.text, "field_description")
                     # new_set.add(p.data_desc)
 
-        # Add a created instance into object set list
-        object_set.add(p)
-        # Assign a set to created key.
-        object_dict[elem0.text] = object_set
+            # Add a created instance into object set list
+            # new_set = {}
+            object_set.add(p)
+            # new_set = object_set
+            print("set lenght", len(object_set))
+            print("key values lenght", len(object_dict[elem0.text]))
+            # Assign a set to created key.
+            object_dict[elem0.text] = object_set
 
     return object_dict
 
@@ -356,10 +374,10 @@ def main():
     # 1. Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
     # 2. Loops and collect needed field data from the file.
-    file_name = "ir_model_fields.xml"
+    file_name = "ir_model_fields_test2.xml"
     field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
-    file_name = "ir_model.xml"
+    file_name = "ir_model_test.xml"
     model_objects = loop_fields(file_name, Model)
     # print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
     # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
