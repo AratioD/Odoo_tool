@@ -249,22 +249,14 @@ def write_data(field_objects, model_objects, result_file_name):
 
     for models in all_models:
         if models not in field_objects.keys() and models in model_objects.keys():
-            pass
-            # print("model no field yes model->", models)
-            # # write_rows(models, f, is_class_name_written)
-            # inherit = "_inherit"
-            # write_rows(models, f, inherit, field_objects)
+            inherit = "_inherit"
+            write_rows(models, f, inherit, field_objects)
         elif models in field_objects.keys() and models not in model_objects.keys():
-            pass
-            # print("model yes field not model->", models)
-            # # write_rows(models, f, is_class_name_written)
             inherit = "_inherit"
             write_rows(models, f, inherit, field_objects)
         elif models in field_objects.keys() and models in model_objects.keys():
-            pass
-            # print("yes field and yes model->", models)
-            # inherit = "_name"
-            # write_rows(models, f, inherit, field_objects)
+            inherit = "_name"
+            write_rows(models, f, inherit, field_objects)
 
 
 def write_rows(models, f, inherit, objects):
@@ -375,10 +367,10 @@ def main():
     # 1. Call a file function to generate a new python file.
     result_file_name = time_stamp_filename()
     # 2. Loops and collect needed field data from the file.
-    file_name = "ir_model_fields_test2.xml"
+    file_name = "ir_model_fields.xml"
     field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
-    file_name = "ir_model_test.xml"
+    file_name = "ir_model.xml"
     model_objects = loop_fields(file_name, Model)
     # print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
     # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
