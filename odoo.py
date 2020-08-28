@@ -1,5 +1,5 @@
 """
-2020-08-22 Demo software. @AratioD
+2020-08-28 Demo software. @AratioD
 """
 import time
 import os
@@ -128,9 +128,7 @@ def loop_fields(file_name, Class):
             # Clear the
             # Empty object set
             object_set = set()
-            print("memory address-->", id(object_set))
-            if len(object_set) > 0:
-                pass
+            
             object_dict[elem0.text]
 
             # Loop only if the class is Field()
@@ -155,16 +153,12 @@ def loop_fields(file_name, Class):
             # new_set = {}
             object_set.add(p)
             # new_set = object_set
-            print("set lenght 1st time-->", len(object_set))
-            print("key values lenght 1st time-->",
-                  len(object_dict[elem0.text]))
             # Assign a set to created key.
             object_dict[elem0.text] = object_set
 
         elif elem0 is not None and elem0.text in object_dict.keys():
 
             object_set1 = set()
-            print("memory address-->", id(object_set1))
             object_set1 = object_dict[elem0.text].copy()
 
             # Loop only if the class is Field()
@@ -188,9 +182,6 @@ def loop_fields(file_name, Class):
             # new_set = {}
             object_set1.add(p)
             # new_set = object_set
-            print("set lenght 2nd time-->", len(object_set))
-            print("key values lenght 2nd time-->",
-                  len(object_dict[elem0.text]))
             # Assign a set to created key.
             object_dict[elem0.text] = object_set1
 
@@ -237,9 +228,6 @@ def write_data(field_objects, model_objects, result_file_name):
     f.write('\n')
     f.write('\n')
 
-    print(len(field_objects.keys()))
-    print(len(model_objects.keys()))
-
     all_models = set()
     for k in field_objects.keys():
         all_models.add(k)
@@ -278,30 +266,6 @@ def write_rows(models, f, inherit, objects):
         f.write(row3)
         f.write('\n')
 
-# def write_rows(dictionary, f):
-#     print(type(dictionary))
-#     for ii in dictionary:
-#         print(ii.data_name)
-#     # if check == False:
-    #     row1 = (f'class {elem1.data_class[0]}(models.Model):')
-    #     f.write('\n')
-    #     f.write(row1)
-    #     f.write('\n')
-    #     row2 = (
-    #         f'      {elem1.data_name_or_inherit[0]} = \'{elem1.data_model[0]}\'')
-    #     f.write(row2)
-    #     f.write('\n')
-    #     row3 = (
-    #         f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-    #     f.write(row3)
-    #     f.write('\n')
-    # elif check == True:
-    #     row3 = (
-    #         f'      {elem1.data_name[0]} = fields.{elem1.data_type[0]}(string="{elem1.data_desc[0]}")')
-    #     f.write(row3)
-    #     f.write('\n')
-
-
 def time_stamp_filename():
     """
     The Function creates a new python file and generates a time stamp for that.
@@ -315,41 +279,41 @@ def time_stamp_filename():
     return file_name
 
 
-# def odoo_test():
-#     """
-#     The test class, which includes n tests to assure everything works fine.
-#     Total tests amount is 5.
-#     """
-#     t0 = Model()
-#     t1 = Model()
-#     t2 = Model()
-#     t3 = Model()
-#     t4 = Model()
-#     t5 = Model()
-#     t6 = Model()
+def odoo_test():
+    """
+    The test class, which includes n tests to assure everything works fine.
+    Total tests amount is 5.
+    """
+    t0 = Field()
+    t1 = Field()
+    t2 = Field()
+    t3 = Field()
+    t4 = Field()
+    t5 = Field()
+    t6 = Field()
 
-#     t0.data_name = ("Test", "name")
-#     t1.data_name = ("Test", "name")
-#     t2.data_name = ("Python_4ever", "name")
-#     t3.data_model = ("cat", "model")
-#     t4.data_name = ("cat", "name")
-#     t5.data_type = ("python_33", "ttype")
-#     t6.data_type = ("python_33", "ttype")
+    t0.data_name = ("Test", "name")
+    t1.data_name = ("Test", "name")
+    t2.data_name = ("Python_4ever", "name")
+    t3.data_model = ("cat", "model")
+    t4.data_name = ("cat", "name")
+    t5.data_type = ("python_33", "ttype")
+    t6.data_type = ("python_33", "ttype")
 
-#     # Test number 1, class instance t0 is equal to t1
-#     assert t0.data_name == t1.data_name
+    # Test number 1, class instance t0 is equal to t1
+    assert t0.data_name == t1.data_name
 
-#     # Test number 2, class instance t1 is NOT equal to t2
-#     assert t1.data_name != t2.data_name
+    # Test number 2, class instance t1 is NOT equal to t2
+    assert t1.data_name != t2.data_name
 
-#     # Test number 3, class instance t3 is NOT equal to t4 for datatype.
-#     assert t3.data_model != t4.data_name
+    # Test number 3, class instance t3 is NOT equal to t4 for datatype.
+    assert t3.data_model != t4.data_name
 
-#     # Test number 4, class instance t5 is equal to t6 for datatype.
-#     assert t5.data_model == t6.data_name
+    # Test number 4, class instance t5 is equal to t6 for datatype.
+    assert t5.data_model == t6.data_name
 
-#     # Test number 5, class instance t6 is NOT equal to t0 for datatype.
-#     assert t6.data_model != t0.data_name
+    # Test number 5, class instance t6 is NOT equal to t0 for datatype.
+    assert t6.data_model != t0.data_name
 
 
 def main():
@@ -371,43 +335,15 @@ def main():
     field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
+    
+
+
     model_objects = loop_fields(file_name, Model)
-    # print("MODEL AND FIELD LIST SIZE-->", len(model_and_fields))
-    # print("MODEL OBJECTS LIST SIZE-->", len(model_objects))
-    # for k, v in model_objects.keys():
-    #     print(k)
+    
+    print("MODEL AND FIELD LIST KEYS-->", len(field_objects.keys()))
+    print("MODEL OBJECTS LIST KEYS-->", len(model_objects.keys()))
 
-    #     1. model
-    # 2. name
-    # 3. ttype
-    # 4. field description
 
-    # for k, v in field_objects.items():
-    #     # print("key-->", k, "value-->", v)
-    #     for vv in v:
-    #         print("key -->", k, "data_name-->", vv.data_name,
-    #               "data_type-->", vv.data_type, "field_desc-->", vv.data_desc)
-
-    # for k, v in model_objects.items():
-    #     # print("key-->", k, "value-->", v)
-    #     for vv in v:
-    #         print("key -->", k, "data_name-->", vv.data_name,
-    #               "data_type-->", vv.data_type, "field_desc-->", vv.data_desc)
-    # for k, v in model_objects.items():
-    #     print("key-->", k, "value-->", v)
-
-    # for i in model_objects:
-    #     print(type(i), "--", id(i), i.__dict__)
-    #     print(isinstance(i, Field))
-    # print(id(i))
-    # inherit_models, name_models, empty_models = individual_models(
-    #     model_and_fields, model_objects)
-
-    # # 4. Concanate and refine model data and field data
-    # refined_objects = refine_data(
-    #     model_and_fields, inherit_models, name_models, empty_models)
-
-    # # 5. Writes file from the refined list of objects.
     write_data(field_objects, model_objects, result_file_name)
 
     # 6. The end of performace timer.
@@ -422,5 +358,5 @@ if __name__ == "__main__":
     # A start time for a performance comparision.
     start = time.time()
     # Run unit tests.
-    # odoo_test()
+    odoo_test()
     main()
