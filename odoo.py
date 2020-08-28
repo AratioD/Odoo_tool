@@ -267,7 +267,7 @@ def write_rows(models, f, inherit, objects):
 def time_stamp_filename():
     """
     The Function creates a new python file and generates a time stamp for that.
-    Return: File name
+    Return: a file name
     """
     timestamp = time.time()
     readable = datetime.datetime.fromtimestamp(timestamp).isoformat()
@@ -302,8 +302,8 @@ def main():
     Functions:
     1. The file function. Call a file function to generate a new python file.
     2. The field collect function. Loops and collect needed field data from the file.
-    3. The model collect function. Concanate and refine model data and field data.
-    4. The refine data function. Concanate and refine model data and field data
+    3. The model collect function. Loops and collect needed field data from the file.
+    4. Print out dictionaries keys for a quality purpose.
     5. The write refined data to file function.  Writes file from the refined list of objects.
     6. The end of performace timer.
     """
@@ -315,14 +315,12 @@ def main():
     field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
-
     model_objects = loop_fields(file_name, Model)
-
+    # 4. Print out dictionaries keys for quality purpose.
     print("MODEL AND FIELD LIST KEYS-->", len(field_objects.keys()))
     print("MODEL OBJECTS LIST KEYS-->", len(model_objects.keys()))
-
+    # 5. Write data function writes an external Python file.
     write_data(field_objects, model_objects, result_file_name)
-
     # 6. The end of performace timer.
     end = time.time()
     print("Performance result--> ", end - start)
