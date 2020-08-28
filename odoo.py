@@ -13,7 +13,7 @@ from collections import defaultdict
 class ValidString:
     """
     The class ValidString validates all string based values in the module.
-    Numerical values are not allowed and strings validation rules are.
+    Numerical values are not allowed and string validation rules are.
     1. If "ttype" capitalize a first letter.
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
@@ -29,7 +29,7 @@ class ValidString:
         self.property_name = property_name
 
     def __set__(self, instance, value):
-        # Unpack the actual value and value type.
+        # Unpack value and value type.
         value, value_type = value
         if not isinstance(value, str):
             raise ValueError(
@@ -65,23 +65,20 @@ class ValidString:
 
 class Model:
     """
-    A instance attribute can handle only string data type.
+    A instance attribute can handle only string "str" data type.
     Class instances are Number inside parenthesis define the lenght of the string.
-    1. data_type = ValidString(1)
+    1. data_model = ValidString(1)
     """
     data_model = ValidString(1)
 
 
 class Field:
     """
-    All instance attributes can handle only string data types.
+    All instance attributes can handle only string "str" data types.
     Class instances are Number inside parenthesis define the lenght of the string.
     1. data_type = ValidString(1)
     2. data_name = ValidString(1)
-    3. data_model = ValidString(1)
-    4. data_class = ValidString(1)
-    5. data_name_or_inherit = ValidString(1)
-    6. data_desc = ValidString(0)
+    3. data_desc = ValidString(0)
     """
     data_type = ValidString(1)
     data_name = ValidString(1)
@@ -103,7 +100,7 @@ def loop_fields(file_name, Class):
     """
     # # Empty object set
     # object_set = set()
-    # object_set1 = set()
+    # object_copy = set()
 
     object_dict = defaultdict(set)
     # Specified file name.
@@ -147,47 +144,40 @@ def loop_fields(file_name, Class):
                     # object_set.add(p.data_desc)
 
             # Add a created instance into object set list
-            # new_set = {}
             object_set.add(p)
-            # new_set = object_set
             # Assign a set to created key.
             object_dict[elem0.text] = object_set
 
         elif elem0 is not None and elem0.text in object_dict.keys():
 
-            object_set1 = set()
-            object_set1 = object_dict[elem0.text].copy()
+            object_copy = set()
+            object_copy = object_dict[elem0.text].copy()
 
             # Loop only if the class is Field()
             if Class is Field:
                 elem1 = c.find('.//field[@name="name"]')
                 if elem1 is not None:
                     p.data_name = (elem1.text, "name")
-                    # new_set.add(p.data_type)
 
                 elem2 = c.find('.//field[@name="ttype"]')
                 if elem2 is not None:
                     p.data_type = (elem2.text, "ttype")
-                    # new_set.add(p.data_type)
 
                 elem3 = c.find('.//field[@name="field_description"]')
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
-                    # new_set.add(p.data_desc)
 
             # Add a created instance into object set list
-            # new_set = {}
-            object_set1.add(p)
-            # new_set = object_set
+            object_copy.add(p)
             # Assign a set to created key.
-            object_dict[elem0.text] = object_set1
+            object_dict[elem0.text] = object_copy
 
     return object_dict
 
 
 def refine_model(elem):
     """
-    The function is callable from the function refine_data.
+    The function is callable from the function write_rows.
     """
     # An empty initialization of class_name function.
     class_name = ""
@@ -245,7 +235,6 @@ def write_data(field_objects, model_objects, result_file_name):
 
 
 def write_rows(models, f, inherit, objects):
-    class_name = refine_model(models)
     class_name = refine_model(models)
     row1 = (f'class {class_name}(models.Model):')
     f.write('\n')
