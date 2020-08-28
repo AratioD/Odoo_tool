@@ -9,7 +9,6 @@ import re
 from xml.etree import ElementTree
 from collections import defaultdict
 
-
 class ValidString:
     """
     The class ValidString validates all string based values in the module.
@@ -92,18 +91,13 @@ def loop_fields(file_name, Class):
     file_name -- takes input file location.
     Parameters
     The fields are
-    1. model
-    2. name
-    3. ttype
-    4. field description
+    1. name
+    2. ttype
+    3. field description
     Returns: A object_set full Model() instances.
     """
-    # # Empty object set
-    # object_set = set()
-    # object_copy = set()
 
     object_dict = defaultdict(set)
-    # Specified file name.
 
     full_file = os.path.abspath(os.path.join(file_name))
     dom = ElementTree.parse(full_file)
