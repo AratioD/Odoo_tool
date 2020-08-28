@@ -17,7 +17,6 @@ class ValidString:
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
     4. If data type is "field_description". No modifications.
-    5. If data type is "class". No modifications.
     Please note that descriptor also saves instances type!
     """
 
@@ -47,7 +46,7 @@ class ValidString:
                 instance.__dict__[self.property_name] = (temp, value_type)
             else:
                 instance.__dict__[self.property_name] = (value, value_type)
-        elif value_type == "model" or value_type == "field_description" or value_type == "class":
+        elif value_type == "model" or value_type == "field_description":
             instance.__dict__[self.property_name] = (value, value_type)
 
     def __get__(self, instance, owner_class):
