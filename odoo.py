@@ -17,7 +17,7 @@ class ValidString:
     2. If data type is "name" and string starts with "x_". Cut the "x_ value"
     3. If data type is "model". No modifications.
     4. If data type is "field_description". No modifications.
-    Please note that descriptor also saves instances type!
+    Please note that descriptor also uses instances type!
     """
 
     def __init__(self, min_lenght=None):
@@ -36,7 +36,6 @@ class ValidString:
             raise ValueError(
                 f'ERROR! {self.property_name} MUST BE AT LEAST {self.min_lenght} CHARACTERS!'
             )
-        # Input validation
         if value_type == "ttype":
             temp = value.capitalize()
             instance.__dict__[self.property_name] = (temp, value_type)
@@ -95,27 +94,23 @@ def loop_fields(file_name, Class):
     3. field description
     Returns: A object_set full Model() instances.
     """
-
+    # Dictionary which will be returned.
     object_dict = defaultdict(set)
 
     full_file = os.path.abspath(os.path.join(file_name))
     dom = ElementTree.parse(full_file)
-    # <record model="ir.model.fields" from XML file
+    # Collect all <record> blocks.
     records = dom.findall('record')
 
-    # Checkout how to make this sorter
     for c in records:
 
         p = Class()
-        # print(type(p), id(p), hex(id(p)))
         elem0 = c.find('.//field[@name="model"]')
-        # if elem0 is not None:
 
         if elem0 is not None and elem0.text not in object_dict.keys():
-            # Clear the
-            # Empty object set
+            # A key set.
             object_set = set()
-
+            # Create a key in the dictionary.
             object_dict[elem0.text]
 
             # Loop only if the class is Field()
@@ -124,17 +119,14 @@ def loop_fields(file_name, Class):
                 elem1 = c.find('.//field[@name="name"]')
                 if elem1 is not None:
                     p.data_name = (elem1.text, "name")
-                    # object_set.add(p.name)
 
                 elem2 = c.find('.//field[@name="ttype"]')
                 if elem2 is not None:
                     p.data_type = (elem2.text, "ttype")
-                    # object_set.add(p.data_type)
 
                 elem3 = c.find('.//field[@name="field_description"]')
                 if elem3 is not None:
                     p.data_desc = (elem3.text, "field_description")
-                    # object_set.add(p.data_desc)
 
             # Add a created instance into object set list
             object_set.add(p)
@@ -172,7 +164,6 @@ def refine_model(elem):
     """
     The function is callable from the function write_rows.
     """
-    # An empty initialization of class_name function.
     class_name = ""
     if "." in elem:
         class_name = elem.split(".")
