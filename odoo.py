@@ -85,9 +85,6 @@ class Field:
     """
     data_type = ValidString(1)
     data_name = ValidString(1)
-    data_model = ValidString(1)
-    data_class = ValidString(1)
-    data_name_or_inherit = ValidString(1)
     data_desc = ValidString(0)
 
 
@@ -128,7 +125,7 @@ def loop_fields(file_name, Class):
             # Clear the
             # Empty object set
             object_set = set()
-            
+
             object_dict[elem0.text]
 
             # Loop only if the class is Field()
@@ -266,6 +263,7 @@ def write_rows(models, f, inherit, objects):
         f.write(row3)
         f.write('\n')
 
+
 def time_stamp_filename():
     """
     The Function creates a new python file and generates a time stamp for that.
@@ -282,38 +280,20 @@ def time_stamp_filename():
 def odoo_test():
     """
     The test class, which includes n tests to assure everything works fine.
-    Total tests amount is 5.
+    Total tests amount is 2.
     """
     t0 = Field()
     t1 = Field()
     t2 = Field()
-    t3 = Field()
-    t4 = Field()
-    t5 = Field()
-    t6 = Field()
 
     t0.data_name = ("Test", "name")
     t1.data_name = ("Test", "name")
     t2.data_name = ("Python_4ever", "name")
-    t3.data_model = ("cat", "model")
-    t4.data_name = ("cat", "name")
-    t5.data_type = ("python_33", "ttype")
-    t6.data_type = ("python_33", "ttype")
-
     # Test number 1, class instance t0 is equal to t1
     assert t0.data_name == t1.data_name
 
     # Test number 2, class instance t1 is NOT equal to t2
     assert t1.data_name != t2.data_name
-
-    # Test number 3, class instance t3 is NOT equal to t4 for datatype.
-    assert t3.data_model != t4.data_name
-
-    # Test number 4, class instance t5 is equal to t6 for datatype.
-    assert t5.data_model == t6.data_name
-
-    # Test number 5, class instance t6 is NOT equal to t0 for datatype.
-    assert t6.data_model != t0.data_name
 
 
 def main():
@@ -335,14 +315,11 @@ def main():
     field_objects = loop_fields(file_name, Field)
     # 3. Loops and collect needed field data from the file.
     file_name = "ir_model.xml"
-    
-
 
     model_objects = loop_fields(file_name, Model)
-    
+
     print("MODEL AND FIELD LIST KEYS-->", len(field_objects.keys()))
     print("MODEL OBJECTS LIST KEYS-->", len(model_objects.keys()))
-
 
     write_data(field_objects, model_objects, result_file_name)
 
@@ -352,11 +329,7 @@ def main():
 
 
 if __name__ == "__main__":
-    """
-    Two functions
-    """
-    # A start time for a performance comparision.
+    # A start time for a performance track.
     start = time.time()
-    # Run unit tests.
     odoo_test()
     main()
